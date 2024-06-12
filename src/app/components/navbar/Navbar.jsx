@@ -1,4 +1,11 @@
 "use client";
+import {
+  NavbarName1,
+  NavbarName2,
+  NavbarName3,
+  NavbarName4,
+  NavbarName5,
+} from "./string";
 
 import Link from "next/link";
 import React, { useState } from "react";
@@ -28,7 +35,7 @@ function Navbar() {
                 src="/icon-logo1.png"
                 width={50}
                 height={50}
-                className="cursor-pointer max-lg:hidden "
+                className="cursor-pointer max-xl:hidden "
                 alt="Logo"
               />
             </Link>
@@ -43,21 +50,21 @@ function Navbar() {
             </Link>
           </div>
           <div className="">
-            <ul className="text-950 flex gap-5 text-2xl font-medium max-lg:hidden">
+            <ul className="text-950 flex gap-5 text-2xl font-medium max-xl:hidden">
               <li>
-                <Link href="/">Home</Link>
+                <Link href="/">{NavbarName1}</Link>
               </li>
               <li>
-                <Link href="/about">About</Link>
+                <Link href="/about">{NavbarName2}</Link>
               </li>
               <li>
-                <Link href="/contact">Contact</Link>
+                <Link href="/contact">{NavbarName3}</Link>
               </li>
               <li>
-                <Link href="/products">Products</Link>
+                <Link href="/products">{NavbarName4}</Link>
               </li>
               <li>
-                <Link href="/wishlist">Wishlist</Link>
+                <Link href="/wishlist">{NavbarName5}</Link>
               </li>
             </ul>
           </div>
@@ -68,12 +75,12 @@ function Navbar() {
               aria-label="Wishlist"
             />
             <FiShoppingCart
-              className="cursor-pointer max-lg:hidden"
+              className="cursor-pointer max-xl:hidden"
               aria-label="Cart"
             />
             <Link
               href="/"
-              className="bg-950 text-100 px-3 py-2 rounded-md text-xl max-lg:hidden"
+              className="bg-950 text-100 px-3 py-2 rounded-md text-xl max-xl:hidden"
             >
               Sign in
             </Link>
@@ -89,7 +96,7 @@ function Navbar() {
               <PiShoppingCartSimpleThin />
               <p className="text-xs mt-1">Cart</p>
             </Link>
-            <Link href="" class="flex flex-col items-center">
+            <Link href="" className="flex flex-col items-center">
               <IoBagHandleOutline className="cursor-pointer xl:hidden" />
               <p className="text-xs mt-1">Products</p>
             </Link>

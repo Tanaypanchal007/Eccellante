@@ -12,8 +12,8 @@ function MostRated() {
       image: "/image-p.jpg",
       discount: "25% off",
       sizes: ["S", "L", "XL", "2XL", "3XL"],
-      price: "₹ 1,199.00",
-      oldPrice: "₹ 1,599.00",
+      price: "₹ 999.00",
+      oldPrice: "₹ 1,299.00",
     },
     {
       id: 1,

@@ -25,7 +25,7 @@ const ShortIntro = (props) => {
             </p>
           </Link>
         </div>
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-5 ">
           <div className="overflow-hidden">
             <Image
               src="/kunal-image.jpg"

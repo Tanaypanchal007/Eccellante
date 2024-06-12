@@ -7,13 +7,14 @@ const ProductCard = ({ product }) => {
   return (
     <>
       <section className="font-main max-w-xs border-2 border-gray-100 rounded-md cursor-pointer">
-        <div className="px-2 py-3">
-          <div className="relative">
+        <div className="px-2 py-1">
+          <div className="relative overflow-hidden">
             <Image
               src={product.image}
               width={300}
               height={100}
               alt={product.name}
+              className="overflow-hidden hover:scale-110 transition-transform duration-200"
             />
             {product.discount && (
               <div className="absolute top-0 right-0 text-xs bg-gray-950 text-white px-4 py-2 rounded-full">
