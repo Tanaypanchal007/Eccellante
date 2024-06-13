@@ -1,40 +1,39 @@
-"use client";
-import React, { useEffect, useState } from "react";
+"use client"
+import React, { useState, useEffect } from "react";
 import ProductCard from "../components/products";
 import Link from "next/link";
 import { HiOutlineArrowRight } from "react-icons/hi";
-import { getDocs, collection } from "firebase/firestore";
-import { db } from "../firebaseConfig"; // Import your firebase config
-
-async function fetchDataFromFirestore() {
-  const querySnapshot = await getDocs(collection(db, "products"));
-  const data = [];
-  querySnapshot.forEach((doc) => {
-    data.push({ id: doc.id, ...doc.data() });
-  });
-  return data;
-}
 
 function MostRated() {
-  const [userData, setUserData] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await fetchDataFromFirestore();
-        setUserData(data);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      } finally {
+    fetch("/api/user/route")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setProducts(data);
         setLoading(false);
-      }
-    }
-    fetchData();
+      })
+      .catch((error) => {
+        setError(error);
+        setLoading(false);
+      });
   }, []);
+
 
   if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
   }
 
   return (
@@ -43,15 +42,12 @@ function MostRated() {
         Most Rated
       </h1>
       <div className="grid grid-cols-1 max-sm:px-14 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {userData.map((product) => (
+        {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
       <div className="flex items-center justify-center mt-7">
-        <Link
-          href=""
-          className="flex font-bold rounded items-center border-2 border-950 p-2"
-        >
+        <Link href="" className="flex font-bold rounded items-center border-2 border-950 p-2">
           Explore More <HiOutlineArrowRight className="ml-2" />
         </Link>
       </div>

@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import { FaRegHeart } from "react-icons/fa";
 import { FiShoppingBag } from "react-icons/fi";
@@ -6,20 +7,21 @@ import Image from "next/image";
 const ProductCard = ({ product }) => {
   return (
     <section className="font-main max-w-xs border-2 border-gray-100 rounded-md cursor-pointer">
-      <div className="px-2 py-3">
-        <div className="relative">
+      <div className="px-2 py-1">
+        {/* <div className="relative overflow-hidden">
           <Image
             src={product.image}
             width={300}
             height={100}
             alt={product.name}
+            className="overflow-hidden hover:scale-110 transition-transform duration-200"
           />
           {product.discount && (
             <div className="absolute top-0 right-0 text-xs bg-gray-950 text-white px-4 py-2 rounded-full">
               {product.discount}
             </div>
           )}
-        </div>
+        </div> */}
         <div className="flex mt-2">
           <div className="space-y-2 flex-1">
             <h2 className="text-md font-bold">{product.name}</h2>
