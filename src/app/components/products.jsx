@@ -69,6 +69,7 @@ import React from "react";
 import { FaRegHeart } from "react-icons/fa";
 import { FiShoppingBag } from "react-icons/fi";
 import Image from "next/image";
+import Link from "next/link";
 
 const ProductCard = ({ product }) => {
   return (
@@ -113,10 +114,12 @@ const ProductCard = ({ product }) => {
               <p className="text-black font-semibold">{product.price}</p>
               <del className="text-gray-400 font-bold">{product.oldPrice}</del>
             </div>
-            <div className="flex items-center text-white bg-gray-950 px-3 gap-2 py-2 rounded cursor-pointer">
-              <FiShoppingBag className="-mt-1" />
-              <p>Add</p>
-            </div>
+            <Link href="/products">
+              <div className="flex items-center text-white bg-gray-950 px-3 gap-2 py-2 rounded cursor-pointer">
+                <FiShoppingBag className="-mt-1" />
+                <p>Add</p>
+              </div>
+            </Link>
           </div>
         </div>
       </section>
