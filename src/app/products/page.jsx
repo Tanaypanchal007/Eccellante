@@ -3,10 +3,43 @@
 import { useState } from "react";
 import Image from "next/image";
 import { IoSearchOutline } from "react-icons/io5";
+import React, { useEffect} from "react";
+import ProductCard from "../components/products";
+import Link from "next/link";
+import { HiOutlineArrowRight } from "react-icons/hi";
+import { getDocs, collection } from "firebase/firestore";
+import { db } from "../firebaseConfig"; // Import your firebase config
 
+async function fetchDataFromFirestore() {
+  const querySnapshot = await getDocs(collection(db, "products"));
+  const data = [];
+  querySnapshot.forEach((doc) => {
+    data.push({ id: doc.id, ...doc.data() });
+  });
+  return data;
+}
 export default function Product() {
   const [selectedView, setSelectedView] = useState(2);
+  const [userData, setUserData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await fetchDataFromFirestore();
+        setUserData(data);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   const handleViewChange = (view) => {
     setSelectedView(view);
   };
@@ -131,7 +164,15 @@ export default function Product() {
             />
             <IoSearchOutline className="text-3xl absolute top-5 left-16" />
           </div>
-          <div></div>
+          <div className="container mx-auto px-4 py-10 font-main">
+  
+      <div className="grid grid-cols-1 max-sm:px-14 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {userData.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    
+    </div>
         </div>
       </div>
     </section>
