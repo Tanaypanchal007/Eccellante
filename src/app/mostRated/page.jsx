@@ -1,60 +1,49 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import ProductCard from "../components/products";
 import Link from "next/link";
 import { HiOutlineArrowRight } from "react-icons/hi";
+import { getDocs, collection } from "firebase/firestore";
+import { db } from "../firebaseConfig"; // Import your firebase config
+
+async function fetchDataFromFirestore() {
+  const querySnapshot = await getDocs(collection(db, "products"));
+  const data = [];
+  querySnapshot.forEach((doc) => {
+    data.push({ id: doc.id, ...doc.data() });
+  });
+  return data;
+}
 
 function MostRated() {
-  const products = [
-    {
-      id: 1,
-      name: "The Healing Heart T-shirt",
-      description: "Lorem ipsum dolor sit amet dolor sit amet consectetur.",
-      image: "/image-p.jpg",
-      discount: "25% off",
-      sizes: ["S", "L", "XL", "2XL", "3XL"],
-      price: "₹ 999.00",
-      oldPrice: "₹ 1,299.00",
-    },
-    {
-      id: 1,
-      name: "The Healing Heart T-shirt",
-      description: "Lorem ipsum dolor sit amet dolor sit amet consectetur.",
-      image: "/image-p.jpg",
-      discount: "25% off",
-      sizes: ["S", "L", "XL", "2XL", "3XL"],
-      price: "₹ 1,199.00",
-      oldPrice: "₹ 1,599.00",
-    },
-    {
-      id: 1,
-      name: "The Healing Heart T-shirt",
-      description: "Lorem ipsum dolor sit amet dolor sit amet consectetur.",
-      image: "/image-p.jpg",
-      discount: "25% off",
-      sizes: ["S", "L", "XL", "2XL", "3XL"],
-      price: "₹ 1,199.00",
-      oldPrice: "₹ 1,599.00",
-    },
-    {
-      id: 1,
-      name: "The Healing Heart T-shirt",
-      description: "Lorem ipsum dolor sit amet dolor sit amet consectetur.",
-      image: "/image-p.jpg",
-      discount: "25% off",
-      sizes: ["S", "L", "XL", "2XL", "3XL"],
-      price: "₹ 1,199.00",
-      oldPrice: "₹ 1,599.00",
-    },
+  const [userData, setUserData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    // Add more products as needed
-  ];
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await fetchDataFromFirestore();
+        setUserData(data);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="container mx-auto px-4 py-10 font-main">
       <h1 className="text-4xl text-center mb-16 border-b-4 w-[230px] px-2 font-bold pb-4 m-auto border-950">
         Most Rated
       </h1>
       <div className="grid grid-cols-1 max-sm:px-14 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {products.map((product) => (
+        {userData.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
