@@ -8,8 +8,6 @@ import { db, storage } from "../firebaseConfig"; // Import your firebase config
 import ProductCard from "../products/products";
 import { fetchDataFromFirestore } from "../Utils/firebaseutil";
 
-
-
 function dashboard() {
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,13 +18,13 @@ function dashboard() {
     sizes: [],
     price: "",
     oldPrice: "",
-    label: "", // New label field
+    label: "",
   });
-  const [imageFile, setImageFile] = useState(null); // State to store the selected image file
-  const [successMessage, setSuccessMessage] = useState(""); // State for success message
-  const [errorMessage, setErrorMessage] = useState(""); // State for error message
+  const [imageFile, setImageFile] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const sizesOptions = ["XS", "S", "M", "L", "XL"]; // Predefined sizes
+  const sizesOptions = ["XS", "S", "M", "L", "XL"];
 
   useEffect(() => {
     async function fetchData() {

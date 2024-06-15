@@ -23,6 +23,7 @@ export default function Product() {
         const data = await fetchDataFromFirestore("products");
         setUserData(data);
       } catch (error) {
+
         console.error("Error fetching data: ", error);
       } finally {
         setLoading(false);
