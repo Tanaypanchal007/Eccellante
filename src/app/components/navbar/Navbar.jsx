@@ -63,17 +63,15 @@ function Navbar() {
               <li>
                 <Link href="/products">{NavbarName4}</Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="/wishlist">{NavbarName5}</Link>
-              </li>
+              </li> */}
             </ul>
           </div>
           <div className="flex gap-5 items-center text-3xl">
-            <IoSearchOutline className="cursor-pointer" aria-label="Search" />
-            <FaRegHeart
-              className="cursor-pointer xl:hidden"
-              aria-label="Wishlist"
-            />
+            <Link href="/wishlist">
+              <FaRegHeart className="cursor-pointer " aria-label="Wishlist" />
+            </Link>
             <FiShoppingCart
               className="cursor-pointer max-xl:hidden"
               aria-label="Cart"
@@ -96,7 +94,7 @@ function Navbar() {
               <PiShoppingCartSimpleThin />
               <p className="text-xs mt-1">Cart</p>
             </Link>
-            <Link href="" className="flex flex-col items-center">
+            <Link href="/products" className="flex flex-col items-center">
               <IoBagHandleOutline className="cursor-pointer xl:hidden" />
               <p className="text-xs mt-1">Products</p>
             </Link>

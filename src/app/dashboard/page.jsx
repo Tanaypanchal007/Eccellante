@@ -1,20 +1,14 @@
-"use client";
+"use client"
 import React, { useEffect, useState } from "react";
-import ProductCard from "../components/products";
 import Link from "next/link";
 import { HiOutlineArrowRight } from "react-icons/hi";
 import { getDocs, collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebaseConfig"; // Import your firebase config
+import ProductCard from "../products/products";
+import { fetchDataFromFirestore } from "../Utils/firebaseutil";
 
-async function fetchDataFromFirestore() {
-  const querySnapshot = await getDocs(collection(db, "products"));
-  const data = [];
-  querySnapshot.forEach((doc) => {
-    data.push({ id: doc.id, ...doc.data() });
-  });
-  return data;
-}
+
 
 function dashboard() {
   const [userData, setUserData] = useState([]);
@@ -26,16 +20,18 @@ function dashboard() {
     sizes: [],
     price: "",
     oldPrice: "",
+    label: "", // New label field
   });
-  const [size, setSize] = useState("");
   const [imageFile, setImageFile] = useState(null); // State to store the selected image file
   const [successMessage, setSuccessMessage] = useState(""); // State for success message
   const [errorMessage, setErrorMessage] = useState(""); // State for error message
 
+  const sizesOptions = ["XS", "S", "M", "L", "XL"]; // Predefined sizes
+
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await fetchDataFromFirestore();
+        const data = await fetchDataFromFirestore("products");
         setUserData(data);
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -51,25 +47,21 @@ function dashboard() {
     setNewProduct((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSizeChange = (e) => {
-    setSize(e.target.value);
-  };
-
-  const addSize = () => {
-    if (size && !newProduct.sizes.includes(size)) {
-      setNewProduct((prev) => ({
-        ...prev,
-        sizes: [...prev.sizes, size],
-      }));
-      
-    }
-    setSize("");
-  };
-
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
       setImageFile(e.target.files[0]);
     }
+  };
+
+  const handleSizeChange = (e) => {
+    const { value, checked } = e.target;
+    setNewProduct((prev) => {
+      if (checked) {
+        return { ...prev, sizes: [...prev.sizes, value] };
+      } else {
+        return { ...prev, sizes: prev.sizes.filter((size) => size !== value) };
+      }
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -92,7 +84,7 @@ function dashboard() {
         ...newProduct,
         image: imageUrl,
       });
-      const data = await fetchDataFromFirestore();
+      const data = await fetchDataFromFirestore("products");
       setUserData(data);
       setNewProduct({
         name: "",
@@ -101,6 +93,7 @@ function dashboard() {
         sizes: [],
         price: "",
         oldPrice: "",
+        label: "",
       });
       setImageFile(null); // Clear the file input
       setSuccessMessage("Product added successfully!");
@@ -112,23 +105,7 @@ function dashboard() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-10 font-main">
-      <h1 className="text-4xl text-center mb-16 border-b-4 w-[230px] px-2 font-bold pb-4 m-auto border-950">
-        Most Rated
-      </h1>
-      <div className="grid grid-cols-1 max-sm:px-14 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {userData.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
-      <div className="flex items-center justify-center mt-7">
-        <Link
-          href=""
-          className="flex font-bold rounded items-center border-2 border-950 p-2"
-        >
-          Explore More <HiOutlineArrowRight className="ml-2" />
-        </Link>
-      </div>
+    <div className="container mx-auto px-4 py-10 font-main pt-20">
 
       {successMessage && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-4">
@@ -181,27 +158,18 @@ function dashboard() {
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Sizes
           </label>
-          <input
-            value={size}
-            onChange={handleSizeChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text"
-          />
-          <button
-            type="button"
-            onClick={addSize}
-            className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Add Size
-          </button>
-          <div className="mt-2">
-            {newProduct.sizes.map((size, index) => (
-              <span
-                key={index}
-                className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2"
-              >
-                {size}
-              </span>
+          <div>
+            {sizesOptions.map((size) => (
+              <label key={size} className="inline-flex items-center mr-4">
+                <input
+                  type="checkbox"
+                  value={size}
+                  checked={newProduct.sizes.includes(size)}
+                  onChange={handleSizeChange}
+                  className="form-checkbox"
+                />
+                <span className="ml-2">{size}</span>
+              </label>
             ))}
           </div>
         </div>
@@ -229,6 +197,18 @@ function dashboard() {
             type="text"
           />
         </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Label
+          </label>
+          <input
+            name="label"
+            value={newProduct.label}
+            onChange={handleInputChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            type="text"
+          />
+        </div>
         <button
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -236,6 +216,20 @@ function dashboard() {
           Add Product
         </button>
       </form>
+
+      <h1 className="text-4xl text-center mb-16 px-2 font-bold pb-4 relative">
+        Your Products
+        <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-48 h-1 bg-950"></span>
+      </h1>
+
+      {/* Add scrollable container for products */}
+      <div className="overflow-y-auto max-h-96" style={{ scrollbarWidth: "thin", scrollbarColor: "#121212 #D1D5DB" }}>
+        <div className="grid grid-cols-1 max-sm:px-14 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {userData.map((product) => (
+            <ProductCard key={product.id} product={product} className="min-h-[300px]" />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
