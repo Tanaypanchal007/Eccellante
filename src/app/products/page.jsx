@@ -125,7 +125,7 @@ export default function Product() {
 
       {/* products filter and products cards start here */}
       <div className="flex px-20 max-lg:px-0 mb-10">
-        <div className="w-[17%] pr-5 border-500 border-r-[2px] max-lg:hidden max-lg:px-0">
+        <div className="w-[17%] pr-5 border-500 border-r-[2px] max-xl:hidden max-lg:px-0">
           <div className="border-b-[2px] border-500 pb-7">
             <h3 className="text-xl font-semibold">CATEGORY</h3>
             <ul className="space-y-2">
@@ -181,14 +181,14 @@ export default function Product() {
           </div>
         </div>
 
-        <div className="relative w-full px-10">
-          <div>
+        <div className="relative w-full ">
+          <div className="px-10">
             <input
               type="text"
               placeholder="Search among products..."
               value={searchQuery}
               onChange={handleSearchChange}
-              className=" w-full px-16 py-5 outline-none text-xl rounded-full bg-50 "
+              className=" w-full px-16 py-5 outline-none text-xl max-lg:text-lg rounded-full bg-50 "
             />
             <IoSearchOutline className="text-3xl absolute top-5 left-16" />
           </div>

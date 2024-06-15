@@ -4,7 +4,6 @@ import { FaRegHeart } from "react-icons/fa";
 import { FiShoppingBag } from "react-icons/fi";
 import Image from "next/image";
 import Link from "next/link";
-
 const ProductCard = ({ product }) => {
   return (
     <section className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 flex flex-col gap-4 cursor-pointer hover:shadow-lg transition-shadow duration-200">

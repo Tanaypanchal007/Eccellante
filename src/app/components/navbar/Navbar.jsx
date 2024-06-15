@@ -103,7 +103,7 @@ function Navbar() {
               <CiUser />
               <p className="text-xs mt-1">Login</p>
             </Link>
-            <Link href="/more" className="flex flex-col items-center">
+            <Link href="/about" className="flex flex-col items-center">
               <CgMoreVertical />
               <p className="text-xs mt-1">More</p>
             </Link>
