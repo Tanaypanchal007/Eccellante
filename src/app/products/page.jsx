@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { IoSearchOutline } from "react-icons/io5";
+<<<<<<< HEAD
 import ProductCard from "./products";
 import { getDocs, collection } from "firebase/firestore";
 import { db } from "../firebaseConfig"; // Import your firebase config
@@ -15,11 +16,28 @@ async function fetchDataFromFirestore() {
   });
   return data;
 }
+=======
+import React, { useEffect} from "react";
+import ProductCard from "../components/products";
+import Link from "next/link";
+import { HiOutlineArrowRight } from "react-icons/hi";
+import { getDocs, collection } from "firebase/firestore";
+import { db } from "../firebaseConfig"; // Import your firebase config
+>>>>>>> 759cbdeb2fb351db4d9784d74641ea37b0dbd0e8
 
+async function fetchDataFromFirestore() {
+  const querySnapshot = await getDocs(collection(db, "products"));
+  const data = [];
+  querySnapshot.forEach((doc) => {
+    data.push({ id: doc.id, ...doc.data() });
+  });
+  return data;
+}
 export default function Product() {
   const [selectedView, setSelectedView] = useState(2);
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
+<<<<<<< HEAD
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
 
@@ -40,7 +58,26 @@ export default function Product() {
   if (loading) {
     return <div>Loading...</div>;
   }
+=======
+>>>>>>> 759cbdeb2fb351db4d9784d74641ea37b0dbd0e8
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await fetchDataFromFirestore();
+        setUserData(data);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   const handleViewChange = (view) => {
     setSelectedView(view);
   };
@@ -195,6 +232,7 @@ export default function Product() {
             <IoSearchOutline className="text-3xl absolute top-5 left-16" />
           </div>
           <div className="container mx-auto px-4 py-10 font-main">
+<<<<<<< HEAD
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
               {filteredProducts.length > 0 ? (
                 filteredProducts.map((product) => (
@@ -207,6 +245,16 @@ export default function Product() {
               )}
             </div>
           </div>
+=======
+  
+      <div className="grid grid-cols-1 max-sm:px-14 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {userData.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    
+    </div>
+>>>>>>> 759cbdeb2fb351db4d9784d74641ea37b0dbd0e8
         </div>
       </div>
     </section>

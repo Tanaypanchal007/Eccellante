@@ -4,6 +4,7 @@ import ShortIntro from './shortIntro/page';
 import FreeServices from './freeServices/page';
 import Subscribe from './subscribe/page';
 import MostRated from './mostRated/page';
+import Dashboard from './dashboard/page';
 
 export default function Home() {
     return (
@@ -14,6 +15,7 @@ export default function Home() {
                 <ShortIntro />
                 <FreeServices />
                 <Subscribe />
+                <Dashboard/>
             </div>
         </>
     );
