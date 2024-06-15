@@ -61,6 +61,7 @@ function dashboard() {
         ...prev,
         sizes: [...prev.sizes, size],
       }));
+      
     }
     setSize("");
   };
@@ -115,11 +116,11 @@ function dashboard() {
       <h1 className="text-4xl text-center mb-16 border-b-4 w-[230px] px-2 font-bold pb-4 m-auto border-950">
         Most Rated
       </h1>
-      {/* <div className="grid grid-cols-1 max-sm:px-14 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 max-sm:px-14 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {userData.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
-      </div> */}
+      </div>
       <div className="flex items-center justify-center mt-7">
         <Link
           href=""
