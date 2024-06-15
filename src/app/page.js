@@ -15,7 +15,7 @@ export default function Home() {
                 <ShortIntro />
                 <FreeServices />
                 <Subscribe />
-                <Dashboard/>
+
             </div>
         </>
     );

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 "use client";
 import React, { useEffect, useState } from "react";
 import ProductCard from "../products/products";
@@ -7,16 +6,6 @@ import { HiOutlineArrowRight } from "react-icons/hi";
 import { getDocs, collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebaseConfig"; // Import your firebase config
-=======
-/* eslint-disable react-hooks/rules-of-hooks */
-"use client";
-import React, { useEffect, useState } from "react";
-import ProductCard from "../components/products";
-import Link from "next/link";
-import { HiOutlineArrowRight } from "react-icons/hi";
-import { getDocs, collection } from "firebase/firestore";
-import { db } from "../firebaseConfig"; // Import your firebase config
->>>>>>> 759cbdeb2fb351db4d9784d74641ea37b0dbd0e8
 
 async function fetchDataFromFirestore() {
   const querySnapshot = await getDocs(collection(db, "products"));
@@ -27,7 +16,6 @@ async function fetchDataFromFirestore() {
   return data;
 }
 
-<<<<<<< HEAD
 function dashboard() {
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,12 +31,6 @@ function dashboard() {
   const [imageFile, setImageFile] = useState(null); // State to store the selected image file
   const [successMessage, setSuccessMessage] = useState(""); // State for success message
   const [errorMessage, setErrorMessage] = useState(""); // State for error message
-=======
-function Dashboard() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [userData, setUserData] = useState([]);
-  const [loading, setLoading] = useState(true);
->>>>>>> 759cbdeb2fb351db4d9784d74641ea37b0dbd0e8
 
   useEffect(() => {
     async function fetchData() {
@@ -64,7 +46,6 @@ function Dashboard() {
     fetchData();
   }, []);
 
-<<<<<<< HEAD
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewProduct((prev) => ({ ...prev, [name]: value }));
@@ -259,32 +240,3 @@ function Dashboard() {
 }
 
 export default dashboard;
-=======
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <div className="container mx-auto px-4 py-10 font-main">
-      <h1 className="text-4xl text-center mb-16 border-b-4 w-[230px] px-2 font-bold pb-4 m-auto border-950">
-        Most Rated
-      </h1>
-      <div className="grid grid-cols-1 max-sm:px-14 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {userData.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
-      <div className="flex items-center justify-center mt-7">
-        <Link
-          href=""
-          className="flex font-bold rounded items-center border-2 border-950 p-2"
-        >
-          Explore More <HiOutlineArrowRight className="ml-2" />
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-export default Dashboard;
->>>>>>> 759cbdeb2fb351db4d9784d74641ea37b0dbd0e8
