@@ -7,7 +7,7 @@ import Link from "next/link";
 const ProductCard = ({ product }) => {
   return (
     <section className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 flex flex-col gap-4 cursor-pointer hover:shadow-lg transition-shadow duration-200">
-      <div className="relative h-full overflow-hidden rounded-t-lg">
+      <div className="relative h-[400px] overflow-hidden rounded-t-lg">
         {product.image && (
           <Image
             src={product.image}
@@ -33,13 +33,16 @@ const ProductCard = ({ product }) => {
             }}
           />
         </div>
-        <p className="text-sm text-gray-600">{product.description}</p>
-        <div className="flex flex-wrap gap-2">
+        <p class="text-sm text-gray-600 line-clamp-2 h-10">
+          {product.description}
+        </p>
+
+        <div className="flex gap-2 h-9 ">
           {product.sizes && product.sizes.length > 0 ? (
             product.sizes.map((size) => (
               <button
                 key={size}
-                className="px-3 py-1 border border-gray-300 rounded text-xs hover:bg-gray-200"
+                className="px-3 py-1 border border-gray-300 rounded text-sm w-14 h-8 hover:bg-gray-200"
               >
                 {size}
               </button>
