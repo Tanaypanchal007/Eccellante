@@ -6,15 +6,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import ProductCard from "./products";
 import { getDocs, collection } from "firebase/firestore";
 import { db } from "../firebaseConfig"; // Import your firebase config
-
-async function fetchDataFromFirestore() {
-  const querySnapshot = await getDocs(collection(db, "products"));
-  const data = [];
-  querySnapshot.forEach((doc) => {
-    data.push({ id: doc.id, ...doc.data() });
-  });
-  return data;
-}
+import { fetchDataFromFirestore } from "../Utils/firebaseutil";
 
 export default function Product() {
   const [selectedView, setSelectedView] = useState(2);
@@ -26,7 +18,7 @@ export default function Product() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await fetchDataFromFirestore();
+        const data = await fetchDataFromFirestore("products");
         setUserData(data);
       } catch (error) {
         console.error("Error fetching data: ", error);
