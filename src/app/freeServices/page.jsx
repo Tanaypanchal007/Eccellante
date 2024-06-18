@@ -27,11 +27,11 @@ export default function FreeServices() {
   return (
     <>
       <section className="bg-50">
-        <div className="flex justify-evenly text-center font-main py-10 max-xl:flex-col max-md:px-4 max-md:gap-5 max-xl:px-10 max-xl:gap-10">
+        <div className="flex justify-evenly text-center font-main py-10 max-xl:flex-col max-md:px-4 max-md:gap-5 max-xl:px-10 max-xl:gap-10 ">
           {Services.map((service) => (
             <div
               key={service.id}
-              className="flex flex-col justify-center items-center shadow-md px-28 py-14 bg-white rounded-md cursor-pointer"
+              className="flex flex-col justify-center items-center shadow-md px-28 py-14 bg-white rounded-md cursor-pointer hover:scale-105 duration-200 max-lg:mx-28 max-sm:mx-5"
             >
               <service.icon className="text-5xl mb-3" />
               <p className="text-2xl font-black">{service.servicesName}</p>

@@ -52,7 +52,9 @@ function Navbar() {
           <div className="">
             <ul className="text-950 flex gap-5 text-2xl font-medium max-xl:hidden">
               <li>
-                <Link href="/">{NavbarName1}</Link>
+                <Link href="/" className="">
+                  {NavbarName1}
+                </Link>
               </li>
               <li>
                 <Link href="/about">{NavbarName2}</Link>

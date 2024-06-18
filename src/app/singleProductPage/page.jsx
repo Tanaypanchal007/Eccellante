@@ -20,6 +20,7 @@ function SingleProductPage() {
   };
   const countHandleIncrement = () => {
     setCount(count + 1);
+    setCountError(" ");
   };
 
   const countHandleDecrement = () => {
