@@ -78,7 +78,7 @@ function MostRated() {
       oldPrice: "₹ 1,599.00",
     },
     {
-      id: 1,
+      id: 2,
       name: "The Healing Heart T-shirt",
       description: "Lorem ipsum dolor sit amet dolor sit amet consectetur.",
       image: "/image-p.jpg",
@@ -87,7 +87,7 @@ function MostRated() {
       oldPrice: "₹ 1,599.00",
     },
     {
-      id: 1,
+      id: 3,
       name: "The Healing Heart T-shirt",
       description: "Lorem ipsum dolor sit amet dolor sit amet consectetur.",
       image: "/image-p.jpg",
@@ -96,7 +96,7 @@ function MostRated() {
       oldPrice: "₹ 1,599.00",
     },
     {
-      id: 1,
+      id: 4,
       name: "The Healing Heart T-shirt",
       description: "Lorem ipsum dolor sit amet dolor sit amet consectetur.",
       image: "/image-p.jpg",

@@ -1,30 +1,54 @@
-'use client';
-import { useState } from 'react';
-import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
-import { auth } from '../firebaseConfig';
-import React from 'react';
+"use client";
+import { useState } from "react";
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { auth } from "../firebaseConfig";
+import Swal from "sweetalert2";
+import React from "react";
+import { useRouter } from "next/navigation";
 
 const SignUp = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [createUserWithEmailAndPassword, user, loading, error] =
+    useCreateUserWithEmailAndPassword(auth);
+  const router = useRouter();
 
   const handleSignUp = async () => {
     if (!email || !password) {
-      alert('Please fill in both email and password.');
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Please fill in both email and password.",
+      });
       return;
     }
     try {
       const res = await createUserWithEmailAndPassword(email, password);
-      console.log({ res });
       if (res?.user) {
-        sessionStorage.setItem('user', JSON.stringify(res.user));
-        setEmail('');
-        setPassword('');
+        Swal.fire({
+          icon: "success",
+          title: "Successfully Signed Up",
+          text: "You have successfully created an account.",
+        }).then(() => {
+          sessionStorage.setItem("user", JSON.stringify(res.user));
+          setEmail("");
+          setPassword("");
+          router.push("/");
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Invalid email or password. Please try again.",
+        });
       }
     } catch (e) {
-      console.error('Sign-up error:', e);
-      alert(`Error: ${e.message}`);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Invalid email or password. Please try again.",
+      });
+      console.error("Sign-up error:", e);
     }
   };
 
@@ -51,7 +75,7 @@ const SignUp = () => {
           onClick={handleSignUp}
           className="w-full p-3 bg-indigo-600 rounded text-white hover:bg-indigo-500"
         >
-          {loading ? 'Signing Up...' : 'Sign Up'}
+          {loading ? "Signing Up..." : "Sign Up"}
         </button>
       </div>
     </div>
