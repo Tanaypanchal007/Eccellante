@@ -1,17 +1,22 @@
-// components/ProductCard.js
-"use client";
+// src/app/components/ProductCard.jsx
+"use client"
 import React, { useState, useEffect } from "react";
-import { FaRegHeart, FaHeart } from "react-icons/fa";
-import { FiShoppingBag } from "react-icons/fi";
 import Image from "next/image";
+// import { useRouter } from "next/";
+import Swal from 'sweetalert2';
+import { FiShoppingBag } from "react-icons/fi";
+import { FaRegHeart, FaHeart } from "react-icons/fa";
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../firebaseConfig';
 import { useRouter } from "next/navigation";
 
 const ProductCard = ({ product }) => {
-  const Router = useRouter();
+  const router = useRouter();
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [user, loading] = useAuthState(auth);
 
   useEffect(() => {
-    if (product && product.id) {
+    if (product && product.id && user) {
       try {
         const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
         const isProductWishlisted = wishlist.some(
@@ -22,10 +27,26 @@ const ProductCard = ({ product }) => {
         console.error("Error reading from localStorage:", error);
       }
     }
-  }, [product]);
+  }, [product, user]);
 
   const handleWishlist = (e) => {
     e.stopPropagation();
+    if (!user) {
+      Swal.fire({
+        title: 'Please log in',
+        text: 'You need to be logged in to add items to your wishlist.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Login',
+        cancelButtonText: 'Cancel',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push('/sign-in'); // Replace with your login page route
+        }
+      });
+      return;
+    }
+
     if (!product || !product.id) {
       return;
     }
@@ -36,13 +57,65 @@ const ProductCard = ({ product }) => {
       if (isWishlisted) {
         wishlist = wishlist.filter((item) => item.id !== product.id);
         setIsWishlisted(false);
+        Swal.fire({
+          icon: 'success',
+          title: 'Removed from Wishlist',
+          text: 'Item has been removed from your wishlist.',
+        });
       } else {
         wishlist.push(product);
-
         setIsWishlisted(true);
+        Swal.fire({
+          icon: 'success',
+          title: 'Added to Wishlist',
+          text: 'Item has been added to your wishlist.',
+        });
       }
 
       localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    } catch (error) {
+      console.error("Error updating localStorage:", error);
+    }
+  };
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+    if (!user) {
+      Swal.fire({
+        title: 'Please log in',
+        text: 'You need to be logged in to add items to your cart.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Login',
+        cancelButtonText: 'Cancel',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push('/sign-in'); // Replace with your login page route
+        }
+      });
+      return;
+    }
+
+    if (!product || !product.id) {
+      return;
+    }
+
+    try {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      const existingItem = cart.find((item) => item.id === product.id);
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({ ...product, quantity: 1 });
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      Swal.fire({
+        icon: 'success',
+        title: 'Added to Cart',
+        text: 'Item has been added to your cart.',
+      });
     } catch (error) {
       console.error("Error updating localStorage:", error);
     }
@@ -53,7 +126,7 @@ const ProductCard = ({ product }) => {
       className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 flex flex-col gap-4 cursor-pointer hover:shadow-lg transition-shadow duration-200"
       onClick={() => {
         if (product && product.id) {
-          Router.push(`/product/${product.id}`);
+          router.push(`/product/${product.id}`);
         }
       }}
     >
@@ -90,7 +163,7 @@ const ProductCard = ({ product }) => {
 
         <div className="flex gap-2 h-9">
           {product && product.sizes && product.sizes.length > 0 ? (
-            product.sizes.map((size) => (
+            product.sizes.map((size, index) => (
               <button
                 key={size}
                 className="px-3 py-1 border border-gray-300 rounded text-sm w-14 h-8 hover:bg-gray-200"
@@ -111,7 +184,8 @@ const ProductCard = ({ product }) => {
               <del className="text-gray-400 text-sm">₹{product.oldPrice}</del>
             )}
           </div>
-          <div className="flex items-center text-white bg-gray-900 px-4 py-2 rounded-md hover:bg-gray-700 transition-colors cursor-pointer ">
+          <div className="flex items-center text-white bg-gray-900 px-4 py-2 rounded-md hover:bg-gray-700 transition-colors cursor-pointer "
+            onClick={handleAddToCart}>
             <FiShoppingBag className="mr-2" />
             <span>Add</span>
           </div>

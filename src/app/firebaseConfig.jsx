@@ -17,11 +17,11 @@ const auth = getAuth(app);
 const storage = getStorage(app);
 
 // Set session persistence
-setPersistence(auth, browserSessionPersistence)
-  .then(() => {
-    console.log('Session persistence set');
-  })
-  .catch((error) => {
-    console.error('Error setting session persistence:', error);
-  });
+// setPersistence(auth, browserSessionPersistence)
+//   .then(() => {
+//     console.log('Session persistence set');
+//   })
+//   .catch((error) => {
+//     console.error('Error setting session persistence:', error);
+//   });
 export { db, storage, auth, app };
