@@ -218,8 +218,43 @@ function Dashboard() {
           />
           {/* Display selected main image for preview */}
           {image && (
-            <img src={image} alt="Main product" className="mt-2 h-40 w-auto object-contain" />
+            <img
+              src={image}
+              alt="Main product"
+              className="mt-2 h-40 w-auto object-contain"
+            />
           )}
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Additional Images
+          </label>
+          <input
+            name="additionalImages"
+            onChange={handleFileChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            type="file"
+            multiple // Allow multiple file selection
+          />
+          {/* Display selected additional images for preview */}
+          <div className="flex flex-wrap mt-2">
+            {multipleImages.map((url, index) => (
+              <div key={index} className="relative mr-2 mb-2">
+                <img
+                  src={url}
+                  alt={`Additional product image ${index + 1}`}
+                  className="h-20 w-20 object-cover mr-2 mb-2"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveAdditionalImage(index)}
+                  className="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 transform translate-x-1/2 -translate-y-1/2"
+                >
+                  &times;
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">Additional Images</label>
