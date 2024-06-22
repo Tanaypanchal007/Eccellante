@@ -103,7 +103,7 @@ function Navbar() {
               <PiShoppingCartSimpleThin />
               <p className="text-xs mt-1">Cart</p>
             </Link>
-            <Link href="products" className="flex flex-col items-center">
+            <Link href="/products" className="flex flex-col items-center">
               <IoBagHandleOutline className="cursor-pointer xl:hidden" />
               <p className="text-xs mt-1">Products</p>
             </Link>

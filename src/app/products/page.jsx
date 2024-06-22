@@ -8,6 +8,8 @@ import { getDocs, collection } from "firebase/firestore";
 import { db } from "../firebaseConfig"; // Import your firebase config
 import { fetchDataFromFirestore } from "../Utils/firebaseutil";
 
+
+
 export default function Product() {
   const [selectedView, setSelectedView] = useState(2);
   const [userData, setUserData] = useState([]);
@@ -21,6 +23,7 @@ export default function Product() {
         const data = await fetchDataFromFirestore("products");
         setUserData(data);
       } catch (error) {
+
         console.error("Error fetching data: ", error);
       } finally {
         setLoading(false);
@@ -28,6 +31,11 @@ export default function Product() {
     }
     fetchData();
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -185,7 +193,7 @@ export default function Product() {
             />
             <IoSearchOutline className="text-3xl absolute top-5 left-16" />
           </div>
-          <div className="container mx-auto px-10 py-10 font-main">
+          <div className="container mx-auto px-4 py-10 font-main">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
               {filteredProducts.length > 0 ? (
                 filteredProducts.map((product) => (

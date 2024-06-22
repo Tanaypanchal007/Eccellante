@@ -1,12 +1,6 @@
-"use client";
+"use client"
 import React, { useEffect, useState } from "react";
-import {
-  getDocs,
-  collection,
-  addDoc,
-  updateDoc,
-  doc,
-} from "firebase/firestore";
+import { getDocs, collection, addDoc, updateDoc, doc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebaseConfig";
 import ProductCard from "../products/products";
@@ -184,9 +178,7 @@ function Dashboard() {
   };
 
   const handleRemoveAdditionalImage = (index) => {
-    setAdditionalImageFiles((prevFiles) =>
-      prevFiles.filter((_, i) => i !== index)
-    );
+    setAdditionalImageFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
     setMultipleImages((prevUrls) => prevUrls.filter((_, i) => i !== index));
   };
 
@@ -207,9 +199,7 @@ function Dashboard() {
       {/* Product form */}
       <form onSubmit={handleSubmit} className="mt-10">
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Product Name
-          </label>
+          <label className="block text-gray-700 text-sm font-bold mb-2">Product Name</label>
           <input
             name="name"
             value={newProduct.name}
@@ -219,9 +209,7 @@ function Dashboard() {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Main Image
-          </label>
+          <label className="block text-gray-700 text-sm font-bold mb-2">Main Image</label>
           <input
             name="image"
             onChange={handleFileChange}
@@ -269,9 +257,32 @@ function Dashboard() {
           </div>
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Description
-          </label>
+          <label className="block text-gray-700 text-sm font-bold mb-2">Additional Images</label>
+          <input
+            name="additionalImages"
+            onChange={handleFileChange}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            type="file"
+            multiple // Allow multiple file selection
+          />
+          {/* Display selected additional images for preview */}
+          <div className="flex flex-wrap mt-2">
+            {multipleImages.map((url, index) => (
+              <div key={index} className="relative mr-2 mb-2">
+                <img src={url} alt={`Additional product image ${index + 1}`} className="h-20 w-20 object-cover mr-2 mb-2" />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveAdditionalImage(index)}
+                  className="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 transform translate-x-1/2 -translate-y-1/2"
+                >
+                  &times;
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
           <input
             name="description"
             value={newProduct.description}
@@ -281,9 +292,7 @@ function Dashboard() {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Sizes
-          </label>
+          <label className="block text-gray-700 text-sm font-bold mb-2">Sizes</label>
           <div>
             {sizesOptions.map((size) => (
               <label key={size} className="inline-flex items-center mr-4">
@@ -300,9 +309,7 @@ function Dashboard() {
           </div>
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Price
-          </label>
+          <label className="block text-gray-700 text-sm font-bold mb-2">Price</label>
           <input
             name="price"
             value={newProduct.price}
@@ -312,9 +319,7 @@ function Dashboard() {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Old Price
-          </label>
+          <label className="block text-gray-700 text-sm font-bold mb-2">Old Price</label>
           <input
             name="oldPrice"
             value={newProduct.oldPrice}
@@ -324,9 +329,7 @@ function Dashboard() {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Label
-          </label>
+          <label className="block text-gray-700 text-sm font-bold mb-2">Label</label>
           <input
             name="label"
             value={newProduct.label}
@@ -344,13 +347,8 @@ function Dashboard() {
       </form>
 
       {/* Product list */}
-      <h1 className="text-4xl text-center mb-16 px-2 font-bold pb-4 relative">
-        Your Products
-      </h1>
-      <div
-        className="overflow-y-auto max-h-96"
-        style={{ scrollbarWidth: "thin", scrollbarColor: "#121212 #D1D5DB" }}
-      >
+      <h1 className="text-4xl text-center mb-16 px-2 font-bold pb-4 relative">Your Products</h1>
+      <div className="overflow-y-auto max-h-96" style={{ scrollbarWidth: "thin", scrollbarColor: "#121212 #D1D5DB" }}>
         <div className="grid grid-cols-1 max-sm:px-14 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {userData.map((product) => (
             <div key={product.id} className="min-h-[300px]">
