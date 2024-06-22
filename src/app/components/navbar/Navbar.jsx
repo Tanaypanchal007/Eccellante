@@ -20,6 +20,7 @@ import { CgMoreVertical } from "react-icons/cg";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
+  const [wishlistCount, setWishlistCount] = useState(0);
 
   const handleToggle = () => {
     setOpen(!open);
@@ -77,7 +78,7 @@ function Navbar() {
                 aria-label="Wishlist"
               />
               <span className="absolute text-sm text-white top-[20px] pt-[1px] right-[195px] bg-950 w-[20px] h-[20px] rounded-full max-md:right-[4px] max-md: text-center">
-                6
+                0
               </span>
             </Link>
             <FiShoppingCart

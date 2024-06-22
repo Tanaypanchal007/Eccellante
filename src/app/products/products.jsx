@@ -36,10 +36,11 @@ const ProductCard = ({ product }) => {
       if (isWishlisted) {
         wishlist = wishlist.filter((item) => item.id !== product.id);
         setIsWishlisted(false);
+        alert("Product removed From Wishlist");
       } else {
         wishlist.push(product);
-
         setIsWishlisted(true);
+        alert("Product Added Into Wishlist");
       }
 
       localStorage.setItem("wishlist", JSON.stringify(wishlist));
