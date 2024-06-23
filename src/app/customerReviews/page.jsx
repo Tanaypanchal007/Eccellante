@@ -72,7 +72,7 @@ function CustomerReviews() {
             key={index}
             className="p-4 text-black rounded-md flex flex-col items-center justify-center text-center cursor-pointer "
           >
-            <div className="bg-50 rounded-md ">
+            <div className="shadow-3xl rounded-xl ">
               <h1 className="text-lg font-semibold pt-3">{d.customerName}</h1>
               <div className="flex mt-2 text-2xl text-[#fdcc0d] justify-center mb-2">
                 <FaStar />

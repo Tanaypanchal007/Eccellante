@@ -23,6 +23,9 @@ module.exports = {
         "900": "#3d3d3d",
         "950": "#1e1e1e",
       },
+      boxShadow: {
+        '3xl': '0px 0px 6px -1px rgba(0, 0, 0, 0.3)',
+      }
     },
   },
   plugins: [],

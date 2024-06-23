@@ -9,7 +9,7 @@ import { FaThreads } from "react-icons/fa6";
 export default function Footer() {
   return (
     <>
-      <footer className="bg-950 py-10 text-white font-main mt-[20px] mb-10">
+      <footer className="bg-950 py-10 text-white font-main mt-[20px] max-lg:mb-10">
         <div className="flex justify-between items-center px-10 max-lg:flex-col max-lg:items-start">
           <div className="flex flex-col items-center max-lg:items-start gap-8 -mt-[30px]">
             <Image

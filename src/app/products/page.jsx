@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { IoSearchOutline } from "react-icons/io5";
 import ProductCard from "./products";
+import { FaBars } from "react-icons/fa";
+
 import { getDocs, collection } from "firebase/firestore";
 import { db } from "../firebaseConfig"; // Import your firebase config
 import { fetchDataFromFirestore } from "../Utils/firebaseutil";
-
-
 
 export default function Product() {
   const [selectedView, setSelectedView] = useState(2);
@@ -16,6 +16,11 @@ export default function Product() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
+  const [open, setOpen] = useState(false); // Fixed the state variable name here
+
+  const handleFilterMenu = () => {
+    setOpen(!open); // Fixed the function name here
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -23,7 +28,6 @@ export default function Product() {
         const data = await fetchDataFromFirestore("products");
         setUserData(data);
       } catch (error) {
-
         console.error("Error fetching data: ", error);
       } finally {
         setLoading(false);
@@ -36,10 +40,6 @@ export default function Product() {
     return <div>Loading...</div>;
   }
 
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
   const handleViewChange = (view) => {
     setSelectedView(view);
   };
@@ -91,43 +91,22 @@ export default function Product() {
       </div>
       {/* Banner End Here */}
       {/* Products title and Grid View Option start here */}
-      <div className="flex justify-between items-center px-20 max-md:px-0 py-5 border-b-[1px] border-600 mb-10">
-        <div className="text-2xl font-semibold">Products</div>
-        <div className="text-5xl flex gap-4">
-          {/* Dynamic image source selection based on the selected view */}
-          <Image
-            src={selectedView === 1 ? "/grid-view-2.svg" : "/grid-2.svg"}
-            width={60}
-            height={60}
-            className="cursor-pointer"
-            alt="Grid View 2"
-            onClick={() => handleViewChange(1)}
-          />
-
-          <Image
-            src={selectedView === 2 ? "/grid-view-3.svg" : "/grid-3.svg"}
-            width={60}
-            height={60}
-            className="cursor-pointer"
-            alt="Grid View 3"
-            onClick={() => handleViewChange(2)}
-          />
-          <Image
-            src={selectedView === 3 ? "/grid-view-4.svg" : "/grid-4.svg"}
-            width={60}
-            height={60}
-            className="cursor-pointer"
-            alt="Grid View 4"
-            onClick={() => handleViewChange(3)}
-          />
+      <div className="flex justify-between items-center px-20 max-md:px-5 py-5 max-xl:sticky top-[70px] z-40 bg-50 max-xl:w-full border-b-[1px] border-600 mb-10">
+        <div className="text-2xl font-semibold ">Products</div>
+        <div>
+          <FaBars className="text-2xl xl:hidden" onClick={handleFilterMenu} />
         </div>
       </div>
       {/* Products title and Grid View Option End here */}
 
       {/* products filter and products cards start here */}
-      <div className="flex px-20 max-lg:px-0 mb-10">
-        <div className="w-[17%] pr-5 border-500 border-r-[2px] max-xl:hidden max-lg:px-0">
-          <div className="border-b-[2px] border-500 pb-7">
+      <div className="flex flex-col xl:flex-row px-20 max-lg:px-0 mb-10 relative">
+        <div
+          className={`w-full xl:w-[25%] pr-5 border-500 xl:border-r-[2px] fixed xl:relative max-xl:bg-white max-xl:shadow-lg transition-transform max-xl:top-[80px] py-10 xl:top-0 ${
+            open ? "max-xl:right-0" : "max-xl:right-[-100%]"
+          } max-xl:z-40 max-lg:px-0 transition-all duration-500`}
+        >
+          <div className="border-b-[2px] border-500 pb-7 px-10 max-xl:px-5">
             <h3 className="text-xl font-semibold">CATEGORY</h3>
             <ul className="space-y-2">
               {[
@@ -143,6 +122,7 @@ export default function Product() {
                     name="category"
                     value={category}
                     className="w-6 h-6 cursor-pointer rounded-md border-2 border-gray-400 transition-colors checked:bg-blue-500"
+                    onClick={handleFilterMenu}
                   />
                   <label className="ml-2" htmlFor={`category-${index}`}>
                     {category}
@@ -152,7 +132,7 @@ export default function Product() {
             </ul>
           </div>
 
-          <div>
+          <div className="px-10 max-xl:px-5">
             <h3 className="text-xl font-semibold pt-7">PRICE</h3>
             <ul className="space-y-2">
               {[
@@ -171,6 +151,7 @@ export default function Product() {
                     name="price"
                     value={price}
                     onChange={handlePriceRangeChange}
+                    onClick={handleFilterMenu}
                     className="w-6 h-6 cursor-pointer rounded-md border-2 border-gray-400 transition-colors checked:bg-blue-500"
                   />
                   <label className="ml-2" htmlFor={`price-${index}`}>
@@ -182,7 +163,7 @@ export default function Product() {
           </div>
         </div>
 
-        <div className="relative w-full ">
+        <div className="relative w-full xl:pl-10">
           <div className="px-10">
             <input
               type="text"
@@ -211,4 +192,3 @@ export default function Product() {
     </section>
   );
 }
-2;

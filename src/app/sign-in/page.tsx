@@ -5,6 +5,7 @@ import { auth } from "../firebaseConfig";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import React from "react";
+import Link from "next/link";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -53,32 +54,51 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
-      <div className="bg-gray-800 p-10 rounded-lg shadow-xl w-96">
-        <h1 className="text-white text-2xl mb-5">Sign In</h1>
+    <section className="pt-24 font-main">
+       <h1 className="text-4xl text-center mb-10 border-b-4 w-[160px] px-2 font-bold pb-3 m-auto border-950">
+        Sign In
+      </h1>
+      <div className="text-center pb-10 text-lg font-medium">
+        <p>Contact with us to share your feedback</p>
+        <p>about our clothings</p>
+      </div>
+    <div className="flex justify-center items-center pb-10">
+      <div className="shadow-3xl rounded w-full max-w-[400px]">
+        <div className="p-5">
+        <div>
+          <label>E-mail</label>
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 mb-4 bg-gray-700 rounded outline-none text-white placeholder-gray-500"
+          className="border border-gray-800 outline-none w-full px-3 py-1 rounded mt-2"
         />
+        </div>
+      
+        <div className="mt-3 mb-8">
+        <label>Password</label>
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 mb-4 bg-gray-700 rounded outline-none text-white placeholder-gray-500"
+          className="border border-gray-800 outline-none w-full px-3 py-1 rounded mt-2"
         />
+        </div>
         <button
           onClick={handleSignIn}
-          className="w-full p-3 bg-indigo-600 rounded text-white hover:bg-indigo-500"
+          className="flex gap-2 justify-center items-center py-2 bg-gray-950 w-full text-white rounded"
         >
           {loading ? "Signing In..." : "Sign In"}
         </button>
+        
+        <p className="mt-2">Don't have an account ! <Link href="/sign-up" className=" font-semibold">Sign Up</Link></p>
         {error && <p className="text-red-500">{error.message}</p>}
       </div>
+      </div>
     </div>
+    </section>
   );
 };
 
