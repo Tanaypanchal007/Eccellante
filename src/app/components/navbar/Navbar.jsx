@@ -1,6 +1,5 @@
-"use client";
+"use client"
 import { useState, useEffect } from "react";
-// import { useRouter } from 'next/router';
 import Image from "next/image";
 import Link from "next/link";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -19,7 +18,6 @@ import { CgMoreVertical } from "react-icons/cg";
 import Swal from "sweetalert2";
 
 function Navbar() {
-  const [open, setOpen] = useState(false);
   const [user, loading, error] = useAuthState(auth);
   const [wishlistCount, setWishlistCount] = useState(0);
 
@@ -32,11 +30,13 @@ function Navbar() {
     // Initial count
     updateWishlistCount();
 
-    // Listen for changes in localStorage
+    // Listen for changes in localStorage and wishlistUpdated event
     window.addEventListener("storage", updateWishlistCount);
+    window.addEventListener("wishlistUpdated", updateWishlistCount);
 
     return () => {
       window.removeEventListener("storage", updateWishlistCount);
+      window.removeEventListener("wishlistUpdated", updateWishlistCount);
     };
   }, []);
 

@@ -76,7 +76,7 @@ const SignIn = () => {
         />
         </div>
       
-        <div className="mt-3 mb-8">
+        <div className="mt-3 mb-4">
         <label>Password</label>
         <input
           type="password"
@@ -86,14 +86,14 @@ const SignIn = () => {
           className="border border-gray-800 outline-none w-full px-3 py-1 rounded mt-2"
         />
         </div>
+        <p className="mt-2 text-center text-gray-700 font-medium">Don't have an account ? <Link href="/sign-up" className="font-bold">Sign Up</Link></p>
         <button
           onClick={handleSignIn}
-          className="flex gap-2 justify-center items-center py-2 bg-gray-950 w-full text-white rounded"
+          className="flex gap-2 justify-center items-center py-2 bg-gray-950 w-full text-white rounded mt-2"
         >
           {loading ? "Signing In..." : "Sign In"}
         </button>
         
-        <p className="mt-2">Don't have an account ! <Link href="/sign-up" className=" font-semibold">Sign Up</Link></p>
         {error && <p className="text-red-500">{error.message}</p>}
       </div>
       </div>

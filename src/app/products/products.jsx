@@ -10,7 +10,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebaseConfig";
 import { useRouter } from "next/navigation";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, removeFromWishlist}) => {
   const router = useRouter();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [user, loading] = useAuthState(auth);
@@ -56,6 +56,7 @@ const ProductCard = ({ product }) => {
 
       if (isWishlisted) {
         wishlist = wishlist.filter((item) => item.id !== product.id);
+        removeFromWishlist()
         setIsWishlisted(false);
         Swal.fire({
           icon: "success",

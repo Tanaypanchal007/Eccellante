@@ -9,8 +9,10 @@ import Link from "next/link";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [createUserWithEmailAndPassword, user, loading, error] =
+  const [createUserWithEmailAndPassword, user, , error] =
     useCreateUserWithEmailAndPassword(auth);
   const router = useRouter();
 
@@ -33,6 +35,8 @@ const SignUp = () => {
         }).then(() => {
           sessionStorage.setItem("user", JSON.stringify(res.user));
           setEmail("");
+          setName("");
+          setMobile("");
           setPassword("");
           router.push("/");
         });
@@ -73,8 +77,8 @@ const SignUp = () => {
         <input
           type="text"
           placeholder="Name"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           className="border border-gray-800 outline-none w-full px-3 py-1 rounded mt-2"
         />
         </div>
@@ -93,8 +97,8 @@ const SignUp = () => {
         <input
           type="number"
           placeholder="Contect Number"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={mobile}
+          onChange={(e) => setMobile(e.target.value)}
           className="border border-gray-800 outline-none w-full px-3 py-1 rounded mt-2"
         />
         </div>
@@ -108,7 +112,7 @@ const SignUp = () => {
           className="border border-gray-800 outline-none w-full px-3 py-1 rounded mt-2"
         />
         </div>
-        <div className="mt-3 mb-8">
+        <div className="mt-3 mb-4">
         <label>Confirm Password</label>
         <input
           type="password"
@@ -118,13 +122,12 @@ const SignUp = () => {
           className="border border-gray-800 outline-none w-full px-3 py-1 rounded mt-2"
         />
         </div>
+        <p className="mt-2 text-center text-gray-700 font-medium">Already have an account ? <Link href="/sign-in" className=" font-bold">Sign In</Link></p>
         <button
           onClick={handleSignUp}
-          className="flex gap-2 justify-center items-center py-2 bg-gray-950 w-full text-white rounded"
+          className="flex gap-2 justify-center items-center py-2 bg-gray-950 w-full text-white rounded mt-2"
         >
-          {loading ? "Signing Up..." : "Sign Up"}
         </button>
-        <p className="mt-2">Already have an account ! <Link href="/sign-in" className=" font-semibold">Sign In</Link></p>
       </div>
       </div>
     </div>
