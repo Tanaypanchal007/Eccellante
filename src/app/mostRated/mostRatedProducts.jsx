@@ -1,14 +1,22 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { FaRegHeart } from "react-icons/fa";
 import { FiShoppingBag } from "react-icons/fi";
 import Image from "next/image";
 import Link from "next/link";
 import { FaStar } from "react-icons/fa";
+import Aos from "aos";
+import "aos/dist/aos.css";
 
 const MostRatedProducts = ({ product }) => {
+  useEffect(() => {
+    Aos.init();
+  }, []);
   return (
-    <section className="font-main max-w-xs border-2 border-gray-100 rounded-md cursor-pointer">
+    <section
+      className="font-main max-w-xs border-2 border-gray-100 rounded-md cursor-pointer"
+      data-aos-anchor-placement="bottom-bottom"
+    >
       <div className="px-2 py-3">
         <div className="relative">
           {product.image && (
