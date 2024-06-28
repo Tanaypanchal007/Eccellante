@@ -1,9 +1,17 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { HiOutlineArrowRight } from "react-icons/hi";
+import Aos from "aos";
+import "aos/dist/aos.css";
 
 const ShortIntro = (props) => {
+  useEffect(() => {
+    Aos.init({
+      offset: 400,
+    });
+  }, []);
   return (
     <section className="py-10 px-8 font-main">
       <div className="flex justify-center items-center gap-10 max-lg:flex-col">
@@ -26,7 +34,11 @@ const ShortIntro = (props) => {
           </Link>
         </div>
         <div className="flex items-center gap-5 ">
-          <div className="overflow-hidden">
+          <div
+            className="overflow-hidden"
+            data-aos="fade-down"
+            data-aos-duration="1000"
+          >
             <Image
               src="/kunal-image.jpg"
               width={300}
@@ -35,7 +47,11 @@ const ShortIntro = (props) => {
               className="cursor-pointer hover:scale-105 transition-transform duration-200"
             />
           </div>
-          <div className="flex flex-col gap-6 max-md:gap-3 overflow-hidden">
+          <div
+            className="flex flex-col gap-6 max-md:gap-3 overflow-hidden"
+            data-aos="fade-up"
+            data-aos-duration="1000"
+          >
             <Image
               src="/kunal-second-image.jpg"
               width={350}

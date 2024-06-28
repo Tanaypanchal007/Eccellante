@@ -70,40 +70,40 @@ function page() {
 
   return (
     <section className="pt-28 font-main">
-      <div className="flex justify-evenly flex-col sm:flex-row">
-        <div className="w-full sm:w-auto px-4 sm:px-0">
+      <div className="flex flex-col lg:flex-row justify-around">
+        <div className="w-full lg:w-3/5 px-4 sm:px-8">
           {cartItems.length === 0 ? (
-            <p className="text-2xl">No items in cart</p>
+            <p className="text-2xl text-center">No items in cart</p>
           ) : (
             cartItems.map((item, index) => (
               <div
                 key={index}
-                className="flex flex-col sm:flex-row items-center justify-center relative mb-5 max-sm:border-2"
+                className="relative flex flex-col sm:flex-row items-center justify-between border-2 rounded-md mb-5 p-4"
               >
-                <div className="w-full sm:w-auto flex justify-center sm:justify-start">
+                <div className="w-full sm:w-1/3 flex justify-center sm:justify-start mb-4 sm:mb-0">
                   <Image
                     src={item.image}
                     height={200}
                     width={200}
                     alt={item.name}
-                    className="rounded-md cursor-pointer border-2 max-sm:border-0"
+                    className="rounded-md border-2 max-sm:border-0"
                   />
                 </div>
-                <div className="w-full sm:w-auto space-y-3 px-4 py-4 sm:py-[12px] border-2 border-l-0 max-sm:border-0 sm:rounded-e-md">
+                <div className="w-full sm:w-2/3 space-y-3 px-4 sm:px-8">
                   <p className="text-2xl font-bold">{item.name}</p>
                   <p>{item.description}</p>
                   <div className="flex gap-2 flex-wrap">
                     {Sizes.map((size, index) => (
                       <p
                         key={index}
-                        className="h-9 w-20 border-2 flex items-center justify-center rounded cursor-pointer hover:bg-gray-200"
+                        className="h-9 w-20 border-2 flex items-center justify-center rounded cursor-pointer hover:bg-950 hover:text-white transition-all duration-2000"
                       >
                         {size}
                       </p>
                     ))}
                   </div>
                   <div className="flex justify-between items-center">
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 items-center">
                       <p className="text-xl font-semibold">₹{item.price}</p>
                       {item.oldPrice && (
                         <del className="text-xl font-semibold text-gray-400">
@@ -140,22 +140,30 @@ function page() {
             ))
           )}
         </div>
-      </div>
-      {cartItems.length > 0 && (
-        <div className="flex justify-center mt-8 px-4 sm:px-0">
-          <div className="space-y-3 px-7 py-[12px] border-2 rounded-md">
-            <p className="text-2xl font-bold">Cart Summary</p>
-            <p>Total Items: {totalItems}</p>
-            <p>Total Price: ₹{totalPrice}</p>
-            <button
-              onClick={handleCheckout}
-              className="bg-green-600 text-white px-4 py-2 rounded-md"
-            >
-              Checkout
-            </button>
+        {cartItems.length > 0 && (
+          <div className="w-full lg:w-1/4 px-4 sm:px-8">
+            <div className="space-y-3 px-7 py-6 border-2 rounded-md">
+              <p className="text-2xl font-bold text-center">Cart Summary</p>
+              <div className="border-b-2 pb-3">
+                <div className="flex justify-between items-center">
+                  <p className="text-xl">Total Items</p>
+                  <p className="text-xl">{totalItems}</p>
+                </div>
+                <div className="flex justify-between items-center mt-3">
+                  <p className="text-xl">Total Price</p>
+                  <p className="text-xl">₹{totalPrice}</p>
+                </div>
+              </div>
+              <button
+                onClick={handleCheckout}
+                className="bg-gray-950 hover:bg-gray-900 text-white px-5 py-2 rounded-md w-full"
+              >
+                Checkout
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </section>
   );
 }
