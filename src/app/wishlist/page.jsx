@@ -13,7 +13,7 @@ const Wishlist = () => {
   const removeFromWishlist = (productId) => {
     const updatedWishlist = wishlist.filter(product => product.id !== productId);
     setWishlist(updatedWishlist);
-    
+
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
 
     window.dispatchEvent(new Event("wishlistUpdated"));
@@ -35,7 +35,7 @@ const Wishlist = () => {
               product={product}
               removeFromWishlist={() => {
                 removeFromWishlist(product.id);
-                // forceUpdateWishlist(); 
+                // forceUpdateWishlist();
               }}
             />
           ))

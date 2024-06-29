@@ -26,7 +26,7 @@ const ShortIntro = (props) => {
             Offers you a range of oversized T-shirts with fashionable and unique
             designs of the greatest quality.
           </p>
-          <Link href="/" className="unique-btn">
+          <Link href="/products" className="unique-btn">
             <p className=" text-xl flex items-center mt-7.5 border-2 border-950 bg-gray-900 text-white w-[210px]  px-3 py-3 rounded hover:bg-white hover:text-950 transition-all duration-300">
               Start Shopping
               <HiOutlineArrowRight className="animation-btn ml-1.5 mt-1 hover:bg-white hover:text-950 " />

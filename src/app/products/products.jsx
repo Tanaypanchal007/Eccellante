@@ -30,6 +30,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
   }, [product, user]);
 
   const handleWishlist = (e) => {
+    console.log("hiiiii");
     e.stopPropagation();
     if (!user) {
       Swal.fire({
@@ -41,7 +42,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
         cancelButtonText: "Cancel",
       }).then((result) => {
         if (result.isConfirmed) {
-          router.push("/sign-in"); // Replace with your login page route
+          router.push("/sign-in");
         }
       });
       return;
@@ -56,7 +57,6 @@ const ProductCard = ({ product, removeFromWishlist }) => {
 
       if (isWishlisted) {
         wishlist = wishlist.filter((item) => item.id !== product.id);
-        removeFromWishlist();
         setIsWishlisted(false);
         Swal.fire({
           icon: "success",
@@ -79,6 +79,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
       console.error("Error updating localStorage:", error);
     }
   };
+
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
