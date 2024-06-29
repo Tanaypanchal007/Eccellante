@@ -259,7 +259,8 @@ const ProductDetail = () => {
             ) : (
               <FaRegHeart className="text-xl cursor-pointer text-gray-600 hover:text-gray-800" />
             )}
-            <p>Add to Wishlist</p>
+            {isWishlisted ? (<p>Remove from Wishlist</p>) :(<p>Add to Wishlist</p>)}
+
           </button>
           <button onClick={handleAddToCart} className="flex gap-2 items-center justify-center w-full border border-gray-900 mt-5 py-[12px] text-xl bg-gray-900 rounded text-white font-semibold">
             <FiShoppingCart />
