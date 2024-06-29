@@ -127,6 +127,7 @@ const SignUp = () => {
           onClick={handleSignUp}
           className="flex gap-2 justify-center items-center py-2 bg-gray-950 w-full text-white rounded mt-2"
         >
+          Sign Up
         </button>
       </div>
       </div>

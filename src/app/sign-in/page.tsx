@@ -75,7 +75,6 @@ const SignIn = () => {
           className="border border-gray-800 outline-none w-full px-3 py-1 rounded mt-2"
         />
         </div>
-      
         <div className="mt-3 mb-4">
         <label>Password</label>
         <input

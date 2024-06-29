@@ -106,7 +106,7 @@ export default function Product() {
             open ? "max-xl:right-0" : "max-xl:right-[-100%]"
           } max-xl:z-40 max-lg:px-0 transition-all duration-500`}
         >
-          <div className="border-b-[2px] border-500 pb-7 px-10 max-xl:px-5">
+          <div className="border-b-[2px] border-500 pb-7 px-1 max-lg:px-10 max-xl:px-5">
             <h3 className="text-xl font-semibold">CATEGORY</h3>
             <ul className="space-y-2">
               {[
@@ -132,7 +132,7 @@ export default function Product() {
             </ul>
           </div>
 
-          <div className="px-10 max-xl:px-5">
+          <div className="px-1 max-lg:px-10 max-xl:px-5">
             <h3 className="text-xl font-semibold pt-7">PRICE</h3>
             <ul className="space-y-2">
               {[
@@ -172,7 +172,7 @@ export default function Product() {
               onChange={handleSearchChange}
               className=" w-full px-16 py-5 outline-none text-xl max-lg:text-lg rounded-full bg-50 "
             />
-            <IoSearchOutline className="text-3xl absolute top-5 left-16" />
+            <IoSearchOutline className="text-3xl absolute top-5 max-lg:left-16 left-[100px]" />
           </div>
           <div className="container mx-auto px-4 py-10 font-main">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">

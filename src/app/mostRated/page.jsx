@@ -107,7 +107,7 @@ function MostRated() {
     // Add more products as needed
   ];
   return (
-    <div className="container mx-auto px-4 py-10 font-main">
+    <div className="container mx-auto px-4 max-sm:px-0 py-10 font-main">
       <h1 className="text-4xl text-center mb-16 border-b-4 w-[230px] px-2 font-bold pb-4 m-auto border-950">
         Most Rated
       </h1>
@@ -118,7 +118,7 @@ function MostRated() {
       </div>
       <div className="flex items-center justify-center mt-7">
         <Link
-          href=""
+          href="/products"
           className="flex font-bold rounded items-center border-2 border-950 p-2"
         >
           Explore More <HiOutlineArrowRight className="ml-2" />
