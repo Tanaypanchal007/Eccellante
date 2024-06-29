@@ -74,6 +74,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
       }
 
       localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      window.dispatchEvent(new Event("wishlistUpdated"));
     } catch (error) {
       console.error("Error updating localStorage:", error);
     }

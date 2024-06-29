@@ -6,15 +6,17 @@ import Swal from "sweetalert2";
 import React from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Oval } from "react-loader-spinner";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [createUserWithEmailAndPassword, user, , error] =
+  const [createUserWithEmailAndPassword, user, loading, error] =
     useCreateUserWithEmailAndPassword(auth);
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSignUp = async () => {
     if (!email || !password) {
@@ -25,6 +27,8 @@ const SignUp = () => {
       });
       return;
     }
+    setIsSubmitting(true);
+
     try {
       const res = await createUserWithEmailAndPassword(email, password);
       if (res?.user) {
@@ -38,6 +42,8 @@ const SignUp = () => {
           setName("");
           setMobile("");
           setPassword("");
+          setIsSubmitting(false);
+
           router.push("/");
         });
       } else {
@@ -46,6 +52,7 @@ const SignUp = () => {
           title: "Error",
           text: "Invalid email or password. Please try again.",
         });
+        setIsSubmitting(false);
       }
     } catch (e) {
       Swal.fire({
@@ -53,6 +60,7 @@ const SignUp = () => {
         title: "Error",
         text: "Invalid email or password. Please try again.",
       });
+      setIsSubmitting(false);
       console.error("Sign-up error:", e);
     }
   };
@@ -67,11 +75,25 @@ const SignUp = () => {
         <p>about our clothings</p>
       </div>
     <div className="flex justify-center items-center pb-10">
+    {isSubmitting && (
+          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <Oval
+              height={50}
+              width={50}
+              color="#fff"
+              visible={true}
+              ariaLabel="oval-loading"
+              secondaryColor="#4fa94d"
+              strokeWidth={2}
+              strokeWidthSecondary={2}
+            />
+          </div>
+        )}
       <div className="shadow-3xl rounded w-full max-w-[400px]">
       <div className="p-5">
         {error && <p className="text-red-500">{error.message}</p>}
 
-       
+
         <div className="mt-3 ">
         <label>Name</label>
         <input
@@ -128,6 +150,7 @@ const SignUp = () => {
           className="flex gap-2 justify-center items-center py-2 bg-gray-950 w-full text-white rounded mt-2"
         >
           Sign Up
+         {loading ? "Signing Up..." : "Sign Up"}
         </button>
       </div>
       </div>
