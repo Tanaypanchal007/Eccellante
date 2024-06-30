@@ -9,7 +9,7 @@ import { FaThreads } from "react-icons/fa6";
 export default function Footer() {
   return (
     <>
-      <footer className="bg-950 py-10 text-white font-main mt-[20px]">
+      <footer className="bg-950 py-10 text-white font-main mt-[20px] max-lg:mb-10">
         <div className="flex justify-between items-center px-10 max-lg:flex-col max-lg:items-start">
           <div className="flex flex-col items-center max-lg:items-start gap-8 -mt-[30px]">
             <Image
@@ -34,7 +34,9 @@ export default function Footer() {
             </div>
           </div>
           <div className="max-w-md space-y-7 -mt-[60px] max-lg:mt-7 max-lg:space-y-4">
-            <h2 className="text-2xl font-black tracking-widest">ABOUT US</h2>
+            <h2 className="text-2xl max-xl:text-xl font-black tracking-widest">
+              ABOUT US
+            </h2>
             <p>
               Embracing the boundless power of self-expression through fashion,
               wem gender-neutral clothing brand committed to offering comfy and
@@ -52,10 +54,10 @@ export default function Footer() {
             </h2>
             <ul className="flex flex-col space-y-7 max-lg:space-y-4">
               <Link href="/">Gift Cards</Link>
-              <Link href="/">Privacy Policy</Link>
+              <Link href="/privacyPolicy">Privacy Policy</Link>
               <Link href="/">Terms & Conditions</Link>
-              <Link href="/">Shipping & Return</Link>
-              <Link href="/">Exchange & Return</Link>
+              <Link href="/shippingandReturnPolicy">Shipping & Return</Link>
+              <Link href="/exchangeAndReturnPolicy">Exchange & Return</Link>
             </ul>
           </div>
           {/* Contact Section */}
