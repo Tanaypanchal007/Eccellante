@@ -91,7 +91,7 @@ export default function Product() {
       </div>
       {/* Banner End Here */}
       {/* Products title and Grid View Option start here */}
-      <div className="flex justify-between items-center px-20 max-md:px-5 py-5 max-xl:sticky top-[70px] z-40 bg-50 max-xl:w-full border-b-[1px] border-600 mb-10">
+      <div className="flex justify-between items-center px-20 max-lg:pl-3 max-lg:pr-9 max-sm:pr-8 max-md:px-5 py-5 sticky top-[10px]  max-lg:top-[70px] z-40 bg-50 max-xl:w-full border-b-[1px] border-600 mb-10">
         <div className="text-2xl font-semibold ">Products</div>
         <div>
           <FaBars className="text-2xl xl:hidden" onClick={handleFilterMenu} />
@@ -102,7 +102,7 @@ export default function Product() {
       {/* products filter and products cards start here */}
       <div className="flex flex-col xl:flex-row px-20 max-lg:px-0 mb-10 relative">
         <div
-          className={`w-full xl:w-[25%] pr-5 border-500 xl:border-r-[2px] fixed xl:relative max-xl:bg-white max-xl:shadow-lg transition-transform max-xl:top-[80px] py-10 xl:top-0 ${
+          className={`w-full xl:w-[25%] pr-5 border-500 xl:border-r-[2px] sticky top-20 h-[calc(100vh-120px)] max-lg:fixed overflow-y-auto max-xl:bg-white max-xl:shadow-lg transition-transform max-xl:top-[80px] py-10 ${
             open ? "max-xl:right-0" : "max-xl:right-[-100%]"
           } max-xl:z-40 max-lg:px-0 transition-all duration-500`}
         >

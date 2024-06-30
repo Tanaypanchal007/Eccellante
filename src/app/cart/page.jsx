@@ -71,7 +71,7 @@ function page() {
   return (
     <section className="pt-28 font-main">
       <div className="flex flex-col lg:flex-row justify-around">
-        <div className="w-full lg:w-3/5 px-4 sm:px-8">
+        <div className="w-full  lg:w-3/5 px-4 sm:px-8">
           {cartItems.length === 0 ? (
             <p className="text-2xl text-center">No items in cart</p>
           ) : (
@@ -143,8 +143,8 @@ function page() {
           )}
         </div>
         {cartItems.length > 0 && (
-          <div className="w-full lg:w-1/4 px-4 sm:px-8">
-            <div className="space-y-3 px-7 py-6 border-2 rounded-md">
+          <div className="w-full  lg:w-1/4 px-4 sm:px-8">
+            <div className="space-y-3 px-7 sticky top-[100px] py-6 border-2 rounded-md">
               <p className="text-2xl font-bold text-center">Cart Summary</p>
               <div className="border-b-2 pb-3">
                 <div className="flex justify-between items-center">

@@ -156,8 +156,8 @@ const ProductDetail = () => {
           if (docSnap.exists()) {
             const productData = docSnap.data();
             setProduct(productData);
-            if (productData.images && productData.images.length > 0) {
-              setSelectedImage(productData.images[0]);
+            if (productData.add_images && productData.add_images.length > 0) {
+              setSelectedImage(productData.add_images[0]);
             }
           } else {
             console.log("No such document!");
@@ -185,18 +185,19 @@ const ProductDetail = () => {
       <div className="flex max-md:flex-col gap-10 justify-center ">
         <div className="flex max-md:flex-col-reverse items-center md:items-start">
           <div className="flex flex-col max-md:flex-row max-md:gap-6 gap-4 max-md:mt-5 items-center md:items-start">
-            {product.images &&
-              product.images.map((image, index) => (
+            {product.add_images &&
+              product.add_images.map((image, index) => (
                 <Image
                   key={index}
                   src={image}
                   width={500}
                   height={500}
                   alt={`Thumbnail ${index + 1}`}
-                  className={`cursor-pointer w-[130px] h-[158px] max-md:w-[70px] max-md:h-[73px] ${selectedImage === image
-                    ? "border-2 border-gray-500"
-                    : "opacity-50 border-2 border-gray-200"
-                    }`}
+                  className={`cursor-pointer w-[130px] h-[158px] max-md:w-[70px] max-md:h-[73px] ${
+                    selectedImage === image
+                      ? "border-2 border-gray-500"
+                      : "opacity-50 border-2 border-gray-200"
+                  }`}
                   onClick={() => setSelectedImage(image)}
                 />
               ))}
@@ -253,16 +254,25 @@ const ProductDetail = () => {
             </button>
           </div>
           <p className="mt-1 font-bold text-red-600">{countError}</p>
-          <button onClick={handleWishlist} className="flex items-center justify-center gap-2 border border-gray-900 w-full py-[12px] mt-6 text-xl rounded font-semibold">
+          <button
+            onClick={handleWishlist}
+            className="flex items-center justify-center gap-2 border border-gray-900 w-full py-[12px] mt-6 text-xl rounded font-semibold"
+          >
             {isWishlisted ? (
               <FaHeart className="text-xl cursor-pointer text-red-600" />
             ) : (
               <FaRegHeart className="text-xl cursor-pointer text-gray-600 hover:text-gray-800" />
             )}
-            {isWishlisted ? (<p>Remove from Wishlist</p>) :(<p>Add to Wishlist</p>)}
-
+            {isWishlisted ? (
+              <p>Remove from Wishlist</p>
+            ) : (
+              <p>Add to Wishlist</p>
+            )}
           </button>
-          <button onClick={handleAddToCart} className="flex gap-2 items-center justify-center w-full border border-gray-900 mt-5 py-[12px] text-xl bg-gray-900 rounded text-white font-semibold">
+          <button
+            onClick={handleAddToCart}
+            className="flex gap-2 items-center justify-center w-full border border-gray-900 mt-5 py-[12px] text-xl bg-gray-900 rounded text-white font-semibold"
+          >
             <FiShoppingCart />
             <p>Add to Cart</p>
           </button>
