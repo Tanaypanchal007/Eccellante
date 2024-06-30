@@ -204,8 +204,8 @@ const ProductCard = ({ product, removeFromWishlist }) => {
             <p className="text-black text-xl font-semibold">
               ₹{product && product.price}
             </p>
-            {product && product.oldPrice && (
-              <del className="text-gray-400 text-sm">₹{product.oldPrice}</del>
+            {product && product.old_price && (
+              <del className="text-gray-400 text-sm">₹{product.old_price}</del>
             )}
           </div>
           <div
