@@ -164,18 +164,39 @@ const ProductCard = ({ product, removeFromWishlist }) => {
 
         <div className="flex gap-2 h-9">
           {product && product.sizes && product.sizes.length > 0 ? (
-            product.sizes.map((size, index) => (
-              <button
-                key={size}
-                className="px-3 py-1 border border-gray-300 rounded text-sm w-14 h-8 hover:bg-gray-200"
-              >
-                {size}
-              </button>
-            ))
+            product.sizes.length > 5 ? (
+              <div>
+                <button className="px-3 py-1 border border-gray-300 rounded text-sm w-14 h-8 hover:bg-gray-200 mr-1">
+                  XS
+                </button>
+                <button className="px-3 py-1 border border-gray-300 rounded text-sm w-14 h-8 hover:bg-gray-200 mr-1">
+                  S
+                </button>
+                <button className="px-3 py-1 border border-gray-300 rounded text-sm w-14 h-8 hover:bg-gray-200 mr-1">
+                  M
+                </button>
+                <button className="px-3 py-1 border border-gray-300 rounded text-sm w-14 h-8 hover:bg-gray-200 mr-1">
+                  L
+                </button>
+                <button className="px-3 py-1 border border-gray-300 rounded text-sm w-14 h-8 hover:bg-gray-200 mr-1">
+                  ++
+                </button>
+              </div>
+            ) : (
+              product.sizes.map((size, index) => (
+                <button
+                  key={index} // use index as key if sizes can be duplicated
+                  className="px-3 py-1 border border-gray-300 rounded text-sm w-14 h-8 hover:bg-gray-200"
+                >
+                  {size}
+                </button>
+              ))
+            )
           ) : (
             <p className="text-xs text-gray-500">No sizes available</p>
           )}
         </div>
+
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-baseline">
             <p className="text-black text-xl font-semibold">
