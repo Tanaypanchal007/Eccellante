@@ -13,16 +13,16 @@ const Wishlist = () => {
   const removeFromWishlist = (productId) => {
     const updatedWishlist = wishlist.filter(product => product.id !== productId);
     setWishlist(updatedWishlist);
-    
+
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
 
-    
+    window.dispatchEvent(new Event("wishlistUpdated"));
   };
 
-  const forceUpdateWishlist = () => {
-    const updatedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    setWishlist(updatedWishlist);
-  };
+  // const forceUpdateWishlist = () => {
+  //   const updatedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+  //   setWishlist(updatedWishlist);
+  // };
 
   return (
     <div className="container mx-auto py-8">
@@ -35,7 +35,7 @@ const Wishlist = () => {
               product={product}
               removeFromWishlist={() => {
                 removeFromWishlist(product.id);
-                forceUpdateWishlist(); 
+                // forceUpdateWishlist();
               }}
             />
           ))

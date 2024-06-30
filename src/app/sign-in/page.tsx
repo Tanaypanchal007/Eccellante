@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import React from "react";
 import Link from "next/link";
+import { Oval } from "react-loader-spinner";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ const SignIn = () => {
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
   const router = useRouter();
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleSignIn = async () => {
     if (!email || !password) {
       Swal.fire({
@@ -23,6 +24,7 @@ const SignIn = () => {
       });
       return;
     }
+    setIsSubmitting(true);
     try {
       const res = await signInWithEmailAndPassword(email, password);
       if (res?.user) {
@@ -34,6 +36,7 @@ const SignIn = () => {
           sessionStorage.setItem("user", JSON.stringify(res.user));
           setEmail("");
           setPassword("");
+          setIsSubmitting(false);
           router.push("/");
         });
       } else {
@@ -42,6 +45,7 @@ const SignIn = () => {
           title: "Error",
           text: "Invalid email or password. Please try again.",
         });
+        setIsSubmitting(false);
       }
     } catch (e) {
       Swal.fire({
@@ -49,6 +53,7 @@ const SignIn = () => {
         title: "Error",
         text: "Invalid email or password. Please try again.",
       });
+      setIsSubmitting(false);
       console.error("Sign-in error:", e);
     }
   };
@@ -63,6 +68,20 @@ const SignIn = () => {
         <p>about our clothings</p>
       </div>
     <div className="flex justify-center items-center pb-10">
+    {isSubmitting && (
+          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <Oval
+              height={50}
+              width={70}
+              color="#fff"
+              visible={true}
+              ariaLabel="oval-loading"
+              secondaryColor="#4fa94d"
+              strokeWidth={2}
+              strokeWidthSecondary={2}
+            />
+          </div>
+        )}
       <div className="shadow-3xl rounded w-full max-w-[400px]">
         <div className="p-5">
         <div>

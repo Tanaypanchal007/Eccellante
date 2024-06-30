@@ -7,7 +7,10 @@ import { FiShoppingCart } from "react-icons/fi";
 
 import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
-import { db } from "../../firebaseConfig";
+import { auth, db } from "../../firebaseConfig";
+import Swal from "sweetalert2";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { FaHeart } from "react-icons/fa6";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -17,14 +20,76 @@ const ProductDetail = () => {
   const [count, setCount] = useState(0);
   const [countError, setCountError] = useState("");
   const [imageChoose, setImageChoose] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [user] = useAuthState(auth);
+  useEffect(() => {
+    if (product && product.id && user) {
+      try {
+        const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        const isProductWishlisted = wishlist.some(
+          (item) => item.id === product.id
+        );
+        setIsWishlisted(isProductWishlisted);
+      } catch (error) {
+        console.error("Error reading from localStorage:", error);
+      }
+    }
+  }, [product, user]);
 
-  const handelToggle = () => {
-    setImageChoose(!imageChoose);
+  const handleWishlist = (e) => {
+    console.log("hiiiii");
+    e.stopPropagation();
+    if (!user) {
+      Swal.fire({
+        title: "Please log in",
+        text: "You need to be logged in to add items to your wishlist.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Login",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push("/sign-in");
+        }
+      });
+      return;
+    }
+
+    if (!product || !product.id) {
+      return;
+    }
+
+    try {
+      let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+      if (isWishlisted) {
+        wishlist = wishlist.filter((item) => item.id !== product.id);
+        setIsWishlisted(false);
+        Swal.fire({
+          icon: "success",
+          title: "Removed from Wishlist",
+          text: "Item has been removed from your wishlist.",
+        });
+      } else {
+        wishlist.push(product);
+        setIsWishlisted(true);
+        Swal.fire({
+          icon: "success",
+          title: "Added to Wishlist",
+          text: "Item has been added to your wishlist.",
+        });
+      }
+
+      localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      window.dispatchEvent(new Event("wishlistUpdated"));
+    } catch (error) {
+      console.error("Error updating localStorage:", error);
+    }
   };
 
   const countHandleIncrement = () => {
     setCount(count + 1);
-    setCountError(" ");
+    setCountError("");
   };
 
   const countHandleDecrement = () => {
@@ -34,8 +99,51 @@ const ProductDetail = () => {
       setCount(0);
       setCountError("The Product Quantity cannot be less than 0");
       setTimeout(() => {
-        setCountError(" ");
+        setCountError("");
       }, 3000);
+    }
+  };
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+    if (!user) {
+      Swal.fire({
+        title: "Please log in",
+        text: "You need to be logged in to add items to your cart.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Login",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push("/sign-in");
+        }
+      });
+      return;
+    }
+
+    if (!product || !product.id) {
+      return;
+    }
+
+    try {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      const existingItem = cart.find((item) => item.id === product.id);
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({ ...product, quantity: 1 });
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      Swal.fire({
+        icon: "success",
+        title: "Added to Cart",
+        text: "Item has been added to your cart.",
+      });
+    } catch (error) {
+      console.error("Error updating localStorage:", error);
     }
   };
 
@@ -48,8 +156,8 @@ const ProductDetail = () => {
           if (docSnap.exists()) {
             const productData = docSnap.data();
             setProduct(productData);
-            if (productData.images && productData.images.length > 0) {
-              setSelectedImage(productData.images[0]);
+            if (productData.add_images && productData.add_images.length > 0) {
+              setSelectedImage(productData.add_images[0]);
             }
           } else {
             console.log("No such document!");
@@ -77,8 +185,8 @@ const ProductDetail = () => {
       <div className="flex max-md:flex-col gap-10 justify-center ">
         <div className="flex max-md:flex-col-reverse items-center md:items-start">
           <div className="flex flex-col max-md:flex-row max-md:gap-6 gap-4 max-md:mt-5 items-center md:items-start">
-            {product.images &&
-              product.images.map((image, index) => (
+            {product.add_images &&
+              product.add_images.map((image, index) => (
                 <Image
                   key={index}
                   src={image}
@@ -133,24 +241,38 @@ const ProductDetail = () => {
           <div className="flex items-center mt-5">
             <button
               className="bg-gray-900 px-4 py-2 text-xl text-white rounded-l"
-              onClick={countHandleIncrement}
-            >
-              +
-            </button>
-            <p className="px-10 border-[2px] py-2 border-gray-900">{count}</p>
-            <button
-              className="bg-gray-900 px-4 py-2 text-xl text-white rounded-r"
               onClick={countHandleDecrement}
             >
               -
             </button>
+            <p className="px-10 border-[2px] py-2 border-gray-900">{count}</p>
+            <button
+              className="bg-gray-900 px-4 py-2 text-xl text-white rounded-r"
+              onClick={countHandleIncrement}
+            >
+              +
+            </button>
           </div>
           <p className="mt-1 font-bold text-red-600">{countError}</p>
-          <button className="flex items-center justify-center gap-2 border border-gray-900 w-full py-[12px] mt-6 text-xl rounded font-semibold">
-            <FaRegHeart />
-            <p>Add to Wishlist</p>
+          <button
+            onClick={handleWishlist}
+            className="flex items-center justify-center gap-2 border border-gray-900 w-full py-[12px] mt-6 text-xl rounded font-semibold"
+          >
+            {isWishlisted ? (
+              <FaHeart className="text-xl cursor-pointer text-red-600" />
+            ) : (
+              <FaRegHeart className="text-xl cursor-pointer text-gray-600 hover:text-gray-800" />
+            )}
+            {isWishlisted ? (
+              <p>Remove from Wishlist</p>
+            ) : (
+              <p>Add to Wishlist</p>
+            )}
           </button>
-          <button className="flex gap-2 items-center justify-center w-full border border-gray-900 mt-5 py-[12px] text-xl bg-gray-900 rounded text-white font-semibold">
+          <button
+            onClick={handleAddToCart}
+            className="flex gap-2 items-center justify-center w-full border border-gray-900 mt-5 py-[12px] text-xl bg-gray-900 rounded text-white font-semibold"
+          >
             <FiShoppingCart />
             <p>Add to Cart</p>
           </button>
