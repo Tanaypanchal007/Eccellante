@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import ProductCard from "../products/products";
 
@@ -8,21 +9,28 @@ const Wishlist = () => {
   useEffect(() => {
     const wishlistItems = JSON.parse(localStorage.getItem("wishlist")) || [];
     setWishlist(wishlistItems);
+
+    const handleWishlistUpdate = () => {
+      const updatedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+      setWishlist(updatedWishlist);
+    };
+
+    window.addEventListener("wishlistUpdated", handleWishlistUpdate);
+    return () => {
+      window.removeEventListener("wishlistUpdated", handleWishlistUpdate);
+    };
   }, []);
 
   const removeFromWishlist = (productId) => {
-    const updatedWishlist = wishlist.filter(product => product.id !== productId);
+    const updatedWishlist = wishlist.filter(
+      (product) => product.id !== productId
+    );
     setWishlist(updatedWishlist);
 
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
 
     window.dispatchEvent(new Event("wishlistUpdated"));
   };
-
-  // const forceUpdateWishlist = () => {
-  //   const updatedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-  //   setWishlist(updatedWishlist);
-  // };
 
   return (
     <div className="container mx-auto py-8">
@@ -33,10 +41,7 @@ const Wishlist = () => {
             <ProductCard
               key={product.id}
               product={product}
-              removeFromWishlist={() => {
-                removeFromWishlist(product.id);
-                // forceUpdateWishlist();
-              }}
+              removeFromWishlist={() => removeFromWishlist(product.id)}
             />
           ))
         ) : (
