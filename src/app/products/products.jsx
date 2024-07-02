@@ -78,9 +78,6 @@ const ProductCard = ({ product, removeFromWishlist }) => {
       console.error("Error updating localStorage:", error);
     }
   };
-
-
-
   const handleAddToCart = (e) => {
     e.stopPropagation();
     if (!user) {
@@ -126,14 +123,14 @@ const ProductCard = ({ product, removeFromWishlist }) => {
 
   return (
     <div
-      className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 flex flex-col gap-4 cursor-pointer hover:shadow-lg transition-shadow duration-200"
+      className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 flex flex-col gap-4 cursor-pointer hover:shadow-lg transition-shadow duration-200 "
       onClick={() => {
         if (product && product.id) {
           router.push(`/product/${product.id}`);
         }
       }}
     >
-      <div className="relative h-80 overflow-hidden rounded-t-lg">
+      <div className="relative h-[480px] sm:h-[420px] md:h-[420px] lg:h-[480px] xl:h-[330px] 2xl:h-[440px] overflow-hidden rounded-t-lg">
         {product && product.image && (
           <Image
             src={product.image}
@@ -151,7 +148,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-start">
-          <h2 className="text-lg font-bold">{product && product.name}</h2>
+          <h2 className="text-lg font-bold pr-4">{product && product.name}</h2>
           <div onClick={handleWishlist}>
             {isWishlisted ? (
               <FaHeart className="text-xl cursor-pointer text-red-600" />
@@ -166,18 +163,39 @@ const ProductCard = ({ product, removeFromWishlist }) => {
 
         <div className="flex gap-2 h-9">
           {product && product.sizes && product.sizes.length > 0 ? (
-            product.sizes.map((size, index) => (
-              <button
-                key={size}
-                className="px-3 py-1 border border-gray-300 rounded text-sm w-14 h-8 hover:bg-gray-200"
-              >
-                {size}
-              </button>
-            ))
+            product.sizes.length > 5 ? (
+              <div>
+                <button className="px-3 py-1 border border-gray-300 rounded text-sm w-10 h-8 hover:bg-gray-200 mr-1">
+                  XS
+                </button>
+                <button className="px-3 py-1 border border-gray-300 rounded text-sm w-10 h-8 hover:bg-gray-200 mr-1">
+                  S
+                </button>
+                <button className="px-3 py-1 border border-gray-300 rounded text-sm w-10 h-8 hover:bg-gray-200 mr-1">
+                  M
+                </button>
+                <button className="px-3 py-1 border border-gray-300 rounded text-sm w-10 h-8 hover:bg-gray-200 mr-1">
+                  L
+                </button>
+                <button className="px-3 py-1 border border-gray-300 rounded text-sm w-10 h-8 hover:bg-gray-200 mr-1">
+                  ++
+                </button>
+              </div>
+            ) : (
+              product.sizes.map((size, index) => (
+                <button
+                  key={index} // use index as key if sizes can be duplicated
+                  className="px-3 py-1 border border-gray-300 rounded text-sm w-14 h-8 hover:bg-gray-200"
+                >
+                  {size}
+                </button>
+              ))
+            )
           ) : (
             <p className="text-xs text-gray-500">No sizes available</p>
           )}
         </div>
+
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-baseline">
             <p className="text-black text-xl font-semibold">
@@ -188,7 +206,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
             )}
           </div>
           <div
-            className="flex items-center text-white bg-gray-900 px-4 py-2 rounded-md hover:bg-gray-700 transition-colors cursor-pointer "
+            className="flex items-center text-white bg-gray-900 px-4 py-2 rounded-md hover:bg-gray-700 transition-colors cursor-pointer"
             onClick={handleAddToCart}
           >
             <FiShoppingBag className="mr-2" />

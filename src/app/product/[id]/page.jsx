@@ -189,16 +189,19 @@ const ProductDetail = () => {
           <div className="flex flex-col max-md:flex-row max-md:gap-6 gap-4 max-md:mt-5 items-center md:items-start">
             {product.multipleImages &&
               product.multipleImages.map((image, index) => (
+
                 <Image
                   key={index}
                   src={image}
                   width={500}
+                  quality={75}
                   height={500}
                   alt={`Thumbnail ${index + 1}`}
-                  className={`cursor-pointer w-[130px] h-[158px] max-md:w-[70px] max-md:h-[73px] ${selectedImage === image
-                    ? "border-2 border-gray-500"
-                    : "opacity-50 border-2 border-gray-200"
-                    }`}
+                  className={`cursor-pointer w-[130px] h-[158px] max-md:w-[70px] max-md:h-[73px] ${
+                    selectedImage === image
+                      ? "border-2 border-gray-500"
+                      : "opacity-50 border-2 border-gray-200"
+                  }`}
                   onClick={() => setSelectedImage(image)}
                 />
               ))}
@@ -208,6 +211,7 @@ const ProductDetail = () => {
               src={selectedImage}
               alt="Selected"
               layout="fill"
+              quality={75}
               className="object-cover border-2 border-gray-200" // Ensuring image scales and covers the area
             />
           </div>
@@ -255,7 +259,10 @@ const ProductDetail = () => {
             </button>
           </div>
           <p className="mt-1 font-bold text-red-600">{countError}</p>
-          <button onClick={handleWishlist} className="flex items-center justify-center gap-2 border border-gray-900 w-full py-[12px] mt-6 text-xl rounded font-semibold">
+          <button
+            onClick={handleWishlist}
+            className="flex items-center justify-center gap-2 border border-gray-900 w-full py-[12px] mt-6 text-xl rounded font-semibold"
+          >
             {isWishlisted ? (
               <FaHeart className="text-xl cursor-pointer text-red-600" />
             ) : (
@@ -263,8 +270,12 @@ const ProductDetail = () => {
             )}
             {isWishlisted ? (<p>Remove from Wishlist</p>) : (<p>Add to Wishlist</p>)}
 
+
           </button>
-          <button onClick={handleAddToCart} className="flex gap-2 items-center justify-center w-full border border-gray-900 mt-5 py-[12px] text-xl bg-gray-900 rounded text-white font-semibold">
+          <button
+            onClick={handleAddToCart}
+            className="flex gap-2 items-center justify-center w-full border border-gray-900 mt-5 py-[12px] text-xl bg-gray-900 rounded text-white font-semibold"
+          >
             <FiShoppingCart />
             <p>Add to Cart</p>
           </button>

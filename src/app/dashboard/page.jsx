@@ -1,10 +1,19 @@
-"use client"
+"use client";
+
 import React, { useEffect, useState } from "react";
-import { getDocs, collection, addDoc, updateDoc, doc } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  addDoc,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebaseConfig";
 import ProductCard from "../products/products";
 import { fetchDataFromFirestore } from "../Utils/firebaseutil";
+import Link from "next/link";
+import { FaAngleRight } from "react-icons/fa";
 
 function Dashboard() {
   const [userData, setUserData] = useState([]);
@@ -83,7 +92,7 @@ function Dashboard() {
 
     try {
       await updateDoc(docRef, newData);
-      const data = await fetchDataFromFirestore("eccellante");
+      const data = await fetchDataFromFirestore("product");
       setUserData(data);
     } catch (error) {
       console.error("Error updating product: ", error);
@@ -145,7 +154,7 @@ function Dashboard() {
       }
 
       // Reset form fields and state
-      const data = await fetchDataFromFirestore("eccellante");
+      const data = await fetchDataFromFirestore("product");
       setUserData(data);
       setNewProduct({
         name: "",
@@ -178,12 +187,14 @@ function Dashboard() {
   };
 
   const handleRemoveAdditionalImage = (index) => {
-    setAdditionalImageFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    setAdditionalImageFiles((prevFiles) =>
+      prevFiles.filter((_, i) => i !== index)
+    );
     setMultipleImages((prevUrls) => prevUrls.filter((_, i) => i !== index));
   };
 
   return (
-    <div className="container mx-auto px-4 py-10 font-main pt-20">
+    <div className="container mx-auto px-4 py-10 font-main ">
       {/* Success and error messages */}
       {successMessage && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-4">
@@ -197,136 +208,175 @@ function Dashboard() {
       )}
 
       {/* Product form */}
-      <form onSubmit={handleSubmit} className="mt-10">
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Product Name</label>
-          <input
-            name="name"
-            value={newProduct.name}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text"
-          />
+      <div className="sticky top-[82px] bg-white py-4 z-50 border-b-[1px]">
+        <div className="flex justify-center items-center gap-1 text-xl font-semibold ">
+          <Link href="">Dashboard</Link>
+          <FaAngleRight />
+          <Link href="">Order List</Link>
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Main Image</label>
-          <input
-            name="image"
-            onChange={handleFileChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="file"
-          />
-          {/* Display selected main image for preview */}
-          {image && (
-            <img
-              src={image}
-              alt="Main product"
-              className="mt-2 h-40 w-auto object-contain"
+      </div>
+      <section className="flex gap-10">
+        <form onSubmit={handleSubmit} className="mt-14 w-[50%]">
+          <div className="mb-4">
+            <label className="block text-gray-700 text-md font-bold mb-2">
+              Product Name
+            </label>
+            <input
+              name="name"
+              value={newProduct.name}
+              onChange={handleInputChange}
+              className="border-[2px] border-gray-800 w-full py-3 rounded px-4"
+              placeholder="Enter Product Name"
+              type="text"
             />
-          )}
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Additional Images</label>
-          <input
-            name="additionalImages"
-            onChange={handleFileChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="file"
-            multiple // Allow multiple file selection
-          />
-          {/* Display selected additional images for preview */}
-          <div className="flex flex-wrap mt-2">
-            {multipleImages.map((url, index) => (
-              <div key={index} className="relative mr-2 mb-2">
-                <img src={url} alt={`Additional product image ${index + 1}`} className="h-20 w-20 object-cover mr-2 mb-2" />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveAdditionalImage(index)}
-                  className="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 transform translate-x-1/2 -translate-y-1/2"
-                >
-                  &times;
-                </button>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-md font-bold mb-2">
+              Main Image
+            </label>
+            <input
+              name="image"
+              onChange={handleFileChange}
+              className="border-[2px] border-gray-800 w-full py-3 rounded px-4"
+              type="file"
+            />
+            {/* Display selected main image for preview */}
+            {image && (
+              <img
+                src={image}
+                alt="Main product"
+                className="mt-2 h-40 w-auto object-contain"
+              />
+            )}
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 text-md font-bold mb-2">
+              Additional Images
+            </label>
+            <input
+              name="additionalImages"
+              onChange={handleFileChange}
+              className="border-[2px] border-gray-800 w-full py-3 rounded px-4"
+              type="file"
+              multiple // Allow multiple file selection
+            />
+            {/* Display selected additional images for preview */}
+            <div className="flex flex-wrap mt-2">
+              {multipleImages.map((url, index) => (
+                <div key={index} className="relative mr-2 mb-2">
+                  <img
+                    src={url}
+                    alt={`Additional product image ${index + 1}`}
+                    className="h-20 w-20 object-cover mr-2 mb-2"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveAdditionalImage(index)}
+                    className="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 transform translate-x-1/2 -translate-y-1/2"
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-md font-bold mb-2">
+              Description
+            </label>
+            <input
+              name="description"
+              value={newProduct.description}
+              onChange={handleInputChange}
+              className="border-[2px] border-gray-800 w-full py-3 rounded px-4"
+              placeholder="Enter Description.."
+              type="text"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-md font-bold mb-2">
+              Sizes
+            </label>
+            <div>
+              {sizesOptions.map((size) => (
+                <label key={size} className="inline-flex items-center mr-4">
+                  <input
+                    type="checkbox"
+                    value={size}
+                    checked={newProduct.sizes.includes(size)}
+                    onChange={handleSizeChange}
+                    className="form-checkbox"
+                  />
+                  <span className="ml-2">{size}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-md font-bold mb-2">
+              Price
+            </label>
+            <input
+              name="price"
+              value={newProduct.price}
+              placeholder="Enter Your New Price"
+              onChange={handleInputChange}
+              className="border-[2px] border-gray-800 w-full py-3 rounded px-4"
+              type="text"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-md font-bold mb-2">
+              Old Price
+            </label>
+            <input
+              name="oldPrice"
+              value={newProduct.oldPrice}
+              placeholder="Enter Your Old Price"
+              onChange={handleInputChange}
+              className="border-[2px] border-gray-800 w-full py-3 rounded px-4"
+              type="text"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-md font-bold mb-2">
+              Label
+            </label>
+            <input
+              name="label"
+              value={newProduct.label}
+              placeholder="Enter Label For Product"
+              onChange={handleInputChange}
+              className="border-[2px] border-gray-800 w-full py-3 rounded px-4"
+              type="text"
+            />
+          </div>
+          <button type="submit" className="bg-950 text-white px-5 py-3 rounded">
+            {isEditing ? "Update Product" : "Add Product"}
+          </button>
+        </form>
+        {/* Product list */}
+        <h1 className="text-black absolute text-2xl font-bold bottom-[565px] right-[360px]">
+          Order List
+        </h1>
+        <div
+          className="overflow-y-auto h-screen w-[50%] mt-[83px]"
+          style={{
+            scrollbarWidth: "revert",
+            scrollbarColor: "#121212 #D1D5DB",
+          }}
+        >
+          <div className="grid grid-cols-2 ">
+            {userData.map((product) => (
+              <div key={product.id} className="min-h-[300px] mr-5">
+                <ProductCard product={product} />
+                <button onClick={() => handleEditClick(product)}>Edit</button>
               </div>
             ))}
           </div>
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
-          <input
-            name="description"
-            value={newProduct.description}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Sizes</label>
-          <div>
-            {sizesOptions.map((size) => (
-              <label key={size} className="inline-flex items-center mr-4">
-                <input
-                  type="checkbox"
-                  value={size}
-                  checked={newProduct.sizes.includes(size)}
-                  onChange={handleSizeChange}
-                  className="form-checkbox"
-                />
-                <span className="ml-2">{size}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Price</label>
-          <input
-            name="price"
-            value={newProduct.price}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Old Price</label>
-          <input
-            name="oldPrice"
-            value={newProduct.oldPrice}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Label</label>
-          <input
-            name="label"
-            value={newProduct.label}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text"
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        >
-          {isEditing ? "Update Product" : "Add Product"}
-        </button>
-      </form>
-
-      {/* Product list */}
-      <h1 className="text-4xl text-center mb-16 px-2 font-bold pb-4 relative">Your Products</h1>
-      <div className="overflow-y-auto max-h-96" style={{ scrollbarWidth: "thin", scrollbarColor: "#121212 #D1D5DB" }}>
-        <div className="grid grid-cols-1 max-sm:px-14 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {userData.map((product) => (
-            <div key={product.id} className="min-h-[300px]">
-              <ProductCard product={product} />
-              <button onClick={() => handleEditClick(product)}>Edit</button>
-            </div>
-          ))}
-        </div>
-      </div>
+      </section>
     </div>
   );
 }
