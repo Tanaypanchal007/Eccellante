@@ -7,11 +7,11 @@ const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
 
   useEffect(() => {
-    const wishlistItems = JSON.parse(localStorage.getItem("wishlist")) || [];
+    const wishlistItems = JSON.parse(localStorage.getItem("wishlistItems")) || [];
     setWishlist(wishlistItems);
 
     const handleWishlistUpdate = () => {
-      const updatedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+      const updatedWishlist = JSON.parse(localStorage.getItem("wishlistItems")) || [];
       setWishlist(updatedWishlist);
     };
 
@@ -27,7 +27,7 @@ const Wishlist = () => {
     );
     setWishlist(updatedWishlist);
 
-    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+    localStorage.setItem("wishlistItems", JSON.stringify(updatedWishlist));
 
     window.dispatchEvent(new Event("wishlistUpdated"));
   };

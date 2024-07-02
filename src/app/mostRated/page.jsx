@@ -7,7 +7,7 @@
 // import { db } from "../firebaseConfig"; // Import your firebase config
 
 // async function fetchDataFromFirestore() {
-//   const querySnapshot = await getDocs(collection(db, "products"));
+//   const querySnapshot = await getDocs(collection(db, "eccellante"));
 //   const data = [];
 //   querySnapshot.forEach((doc) => {
 //     data.push({ id: doc.id, ...doc.data() });

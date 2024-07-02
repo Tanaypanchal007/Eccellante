@@ -18,7 +18,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
   useEffect(() => {
     if (product && product.id && user) {
       try {
-        const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        const wishlist = JSON.parse(localStorage.getItem("wishlistItems")) || [];
         const isProductWishlisted = wishlist.some(
           (item) => item.id === product.id
         );
@@ -30,7 +30,6 @@ const ProductCard = ({ product, removeFromWishlist }) => {
   }, [product, user]);
 
   const handleWishlist = (e) => {
-    console.log("hiiiii");
     e.stopPropagation();
     if (!user) {
       Swal.fire({
@@ -53,7 +52,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
     }
 
     try {
-      let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+      let wishlist = JSON.parse(localStorage.getItem("wishlistItems")) || [];
 
       if (isWishlisted) {
         wishlist = wishlist.filter((item) => item.id !== product.id);
@@ -73,12 +72,13 @@ const ProductCard = ({ product, removeFromWishlist }) => {
         });
       }
 
-      localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      localStorage.setItem("wishlistItems", JSON.stringify(wishlist));
       window.dispatchEvent(new Event("wishlistUpdated"));
     } catch (error) {
       console.error("Error updating localStorage:", error);
     }
   };
+
 
 
   const handleAddToCart = (e) => {

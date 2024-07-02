@@ -23,7 +23,7 @@ function Navbar() {
 
   useEffect(() => {
     const updateWishlistCount = () => {
-      const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+      const wishlist = JSON.parse(localStorage.getItem("wishlistItems")) || [];
       setWishlistCount(wishlist.length);
     };
 

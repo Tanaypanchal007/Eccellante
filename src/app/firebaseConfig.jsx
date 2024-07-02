@@ -3,13 +3,13 @@ import { getFirestore } from "firebase/firestore"
 import { getStorage } from "firebase/storage";
 import { getAuth, setPersistence, browserSessionPersistence } from "firebase/auth";
 const firebaseConfig = {
-  apiKey: "AIzaSyDlfWaJraCy5RcBMMl6ItIuHhee0uLmtYw",
-  authDomain: "excellent-d4289.firebaseapp.com",
-  projectId: "excellent-d4289",
-  storageBucket: "excellent-d4289.appspot.com",
-  messagingSenderId: "556913287935",
-  appId: "1:556913287935:web:2dce529eefb6ae101022ca",
-  measurementId: "G-ZJJ3WTLNGD"
+  apiKey: "AIzaSyCsy793olT_wBPcJONufCFlxeSWqnQCOi4",
+  authDomain: "newproject-c5039.firebaseapp.com",
+  projectId: "newproject-c5039",
+  storageBucket: "newproject-c5039.appspot.com",
+  messagingSenderId: "236238370869",
+  appId: "1:236238370869:web:26f6989eacf184e003997c",
+  measurementId: "G-P66CPP3K6C"
 };
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);

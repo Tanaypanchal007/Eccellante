@@ -31,7 +31,7 @@ function Dashboard() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await fetchDataFromFirestore("products");
+        const data = await fetchDataFromFirestore("eccellante");
         setUserData(data);
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -79,11 +79,11 @@ function Dashboard() {
   };
 
   const handleUpdate = async (id, newData) => {
-    const docRef = doc(db, "products", id);
+    const docRef = doc(db, "eccellante", id);
 
     try {
       await updateDoc(docRef, newData);
-      const data = await fetchDataFromFirestore("products");
+      const data = await fetchDataFromFirestore("eccellante");
       setUserData(data);
     } catch (error) {
       console.error("Error updating product: ", error);
@@ -140,12 +140,12 @@ function Dashboard() {
         await handleUpdate(editProductId, productData);
         setSuccessMessage("Product updated successfully!");
       } else {
-        await addDoc(collection(db, "products"), productData);
+        await addDoc(collection(db, "eccellante"), productData);
         setSuccessMessage("Product added successfully!");
       }
 
       // Reset form fields and state
-      const data = await fetchDataFromFirestore("products");
+      const data = await fetchDataFromFirestore("eccellante");
       setUserData(data);
       setNewProduct({
         name: "",
@@ -224,37 +224,6 @@ function Dashboard() {
               className="mt-2 h-40 w-auto object-contain"
             />
           )}
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Additional Images
-          </label>
-          <input
-            name="additionalImages"
-            onChange={handleFileChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="file"
-            multiple // Allow multiple file selection
-          />
-          {/* Display selected additional images for preview */}
-          <div className="flex flex-wrap mt-2">
-            {multipleImages.map((url, index) => (
-              <div key={index} className="relative mr-2 mb-2">
-                <img
-                  src={url}
-                  alt={`Additional product image ${index + 1}`}
-                  className="h-20 w-20 object-cover mr-2 mb-2"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveAdditionalImage(index)}
-                  className="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 transform translate-x-1/2 -translate-y-1/2"
-                >
-                  &times;
-                </button>
-              </div>
-            ))}
-          </div>
         </div>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">Additional Images</label>

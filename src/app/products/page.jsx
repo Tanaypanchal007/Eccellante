@@ -25,7 +25,7 @@ export default function Product() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await fetchDataFromFirestore("products");
+        const data = await fetchDataFromFirestore("eccellante");
         setUserData(data);
       } catch (error) {
         console.error("Error fetching data: ", error);

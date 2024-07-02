@@ -19,13 +19,40 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const [count, setCount] = useState(0);
   const [countError, setCountError] = useState("");
-  const [imageChoose, setImageChoose] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [user] = useAuthState(auth);
+
+  useEffect(() => {
+    if (id) {
+      const fetchProduct = async () => {
+        try {
+          const docRef = doc(db, "eccellante", id);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const productData = { ...docSnap.data(), id: docSnap.id };
+            setProduct(productData);
+            if (productData.multipleImages && productData.multipleImages.length > 0) {
+              setSelectedImage(productData.multipleImages[0]);
+            }
+          } else {
+            console.log("No such document!");
+          }
+        } catch (error) {
+          console.error("Error fetching product:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchProduct();
+    }
+  }, [id]);
+
   useEffect(() => {
     if (product && product.id && user) {
+    console.log("id",product.id);
+
       try {
-        const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        const wishlist = JSON.parse(localStorage.getItem("wishlistItems")) || [];
         const isProductWishlisted = wishlist.some(
           (item) => item.id === product.id
         );
@@ -37,7 +64,6 @@ const ProductDetail = () => {
   }, [product, user]);
 
   const handleWishlist = (e) => {
-    console.log("hiiiii");
     e.stopPropagation();
     if (!user) {
       Swal.fire({
@@ -60,7 +86,7 @@ const ProductDetail = () => {
     }
 
     try {
-      let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+      let wishlist = JSON.parse(localStorage.getItem("wishlistItems")) || [];
 
       if (isWishlisted) {
         wishlist = wishlist.filter((item) => item.id !== product.id);
@@ -80,12 +106,13 @@ const ProductDetail = () => {
         });
       }
 
-      localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      localStorage.setItem("wishlistItems", JSON.stringify(wishlist));
       window.dispatchEvent(new Event("wishlistUpdated"));
     } catch (error) {
       console.error("Error updating localStorage:", error);
     }
   };
+
 
   const countHandleIncrement = () => {
     setCount(count + 1);
@@ -147,31 +174,6 @@ const ProductDetail = () => {
     }
   };
 
-  useEffect(() => {
-    if (id) {
-      const fetchProduct = async () => {
-        try {
-          const docRef = doc(db, "products", id);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            const productData = docSnap.data();
-            setProduct(productData);
-            if (productData.images && productData.images.length > 0) {
-              setSelectedImage(productData.images[0]);
-            }
-          } else {
-            console.log("No such document!");
-          }
-        } catch (error) {
-          console.error("Error fetching product:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchProduct();
-    }
-  }, [id]);
-
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -185,8 +187,8 @@ const ProductDetail = () => {
       <div className="flex max-md:flex-col gap-10 justify-center ">
         <div className="flex max-md:flex-col-reverse items-center md:items-start">
           <div className="flex flex-col max-md:flex-row max-md:gap-6 gap-4 max-md:mt-5 items-center md:items-start">
-            {product.images &&
-              product.images.map((image, index) => (
+            {product.multipleImages &&
+              product.multipleImages.map((image, index) => (
                 <Image
                   key={index}
                   src={image}
@@ -259,7 +261,7 @@ const ProductDetail = () => {
             ) : (
               <FaRegHeart className="text-xl cursor-pointer text-gray-600 hover:text-gray-800" />
             )}
-            {isWishlisted ? (<p>Remove from Wishlist</p>) :(<p>Add to Wishlist</p>)}
+            {isWishlisted ? (<p>Remove from Wishlist</p>) : (<p>Add to Wishlist</p>)}
 
           </button>
           <button onClick={handleAddToCart} className="flex gap-2 items-center justify-center w-full border border-gray-900 mt-5 py-[12px] text-xl bg-gray-900 rounded text-white font-semibold">
