@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -84,19 +84,38 @@ function Navbar() {
           </div>
           <div className="">
             <ul className="text-950 flex gap-5 text-2xl font-medium max-xl:hidden">
-              <li>
-                <Link href="/" className="">
+              <li className="group">
+                <Link
+                  href="/"
+                  className="relative after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-[3px] after:bg-gray-800 after:transition-all after:duration-300 group-hover:after:w-full"
+                >
                   Home
                 </Link>
               </li>
-              <li>
-                <Link href="/about">About</Link>
+
+              <li className="group">
+                <Link
+                  href="/about"
+                  className="relative after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-[3px] after:bg-gray-800 after:transition-all after:duration-300 group-hover:after:w-full"
+                >
+                  About
+                </Link>
               </li>
-              <li>
-                <Link href="/contact">Contact</Link>
+              <li className="group">
+                <Link
+                  href="/contact"
+                  className="relative  after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-[3px] after:bg-gray-800 after:transition-all after:duration-300 group-hover:after:w-full"
+                >
+                  Contact
+                </Link>
               </li>
-              <li>
-                <Link href="/products">Products</Link>
+              <li className="group">
+                <Link
+                  href="/products"
+                  className="relative after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-[3px] after:bg-gray-800 after:transition-all after:duration-300 group-hover:after:w-full"
+                >
+                  Products
+                </Link>
               </li>
             </ul>
           </div>
