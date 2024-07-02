@@ -17,12 +17,14 @@ export default function Footer() {
               width={200}
               height={100}
               className="max-md:w-[100px] max-lg:hidden"
+              alt="logo-lg"
             ></Image>
             <Image
               src="/main-logo1.png"
               width={200}
               height={100}
               className="max-md:w-[200px] lg:hidden"
+              alt="logo-sm"
             ></Image>
             <div className="text-4xl flex gap-3 max-md:text-2xl">
               <Link href="/" className="border-r-[3px] border-white pr-3">
@@ -53,9 +55,9 @@ export default function Footer() {
               FOR CUSTOMERS
             </h2>
             <ul className="flex flex-col space-y-7 max-lg:space-y-4">
-              <Link href="/">Gift Cards</Link>
+              <Link href="/footer">Gift Cards</Link>
               <Link href="/privacyPolicy">Privacy Policy</Link>
-              <Link href="/">Terms & Conditions</Link>
+              <Link href="/privacyPolicy">Terms & Conditions</Link>
               <Link href="/shippingandReturnPolicy">Shipping & Return</Link>
               <Link href="/exchangeAndReturnPolicy">Exchange & Return</Link>
             </ul>

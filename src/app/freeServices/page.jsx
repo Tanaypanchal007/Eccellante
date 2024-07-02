@@ -39,30 +39,30 @@ export default function FreeServices() {
         <div className="flex justify-evenly text-center font-main py-10 max-xl:flex-col max-md:px-4 max-md:gap-5 max-xl:px-10 max-xl:gap-10 ">
           <div
             className="flex flex-col justify-center items-center shadow-md px-28 py-14 bg-white rounded-md cursor-pointer hover:scale-105 duration-200 max-lg:mx-28 max-sm:mx-5"
-            data-aos="fade-up"
-            data-aos-duration="400"
+            // data-aos="fade-up"
+            // data-aos-duration="400"
           >
-            <FiTruck className="text-5xl mb-3" />
-            <p className="text-2xl font-black">Free</p>
-            <p className="text-2xl font-black">Shipping</p>
+            <FiTruck className="text-5xl mb-3 text-900" />
+            <p className="text-2xl font-semibold">Free</p>
+            <p className="text-2xl font-semibold">Shipping</p>
           </div>
           <div
             className="flex flex-col justify-center items-center shadow-md px-28 py-14 bg-white rounded-md cursor-pointer hover:scale-105 duration-200 max-lg:mx-28 max-sm:mx-5"
-            data-aos="fade-up"
-            data-aos-duration="800"
+            // data-aos="fade-up"
+            // data-aos-duration="800"
           >
-            <PiHeadphones className="text-5xl mb-3" />
-            <p className="text-2xl font-black">24X7</p>
-            <p className="text-2xl font-black">Support</p>
+            <PiHeadphones className="text-5xl mb-3 text-900" />
+            <p className="text-2xl font-semibold">24X7</p>
+            <p className="text-2xl font-semibold">Support</p>
           </div>
           <div
             className="flex flex-col justify-center items-center shadow-md px-28 py-14 bg-white rounded-md cursor-pointer hover:scale-105 duration-200 max-lg:mx-28 max-sm:mx-5"
-            data-aos="fade-up"
-            data-aos-duration="1200"
+            // data-aos="fade-up"
+            // data-aos-duration="1200"
           >
-            <FaRegStar className="text-5xl mb-3" />
-            <p className="text-2xl font-black">Premium</p>
-            <p className="text-2xl font-black">Quality</p>
+            <FaRegStar className="text-5xl mb-3 text-900" />
+            <p className="text-2xl font-semibold">Premium</p>
+            <p className="text-2xl font-semibold">Quality</p>
           </div>
         </div>
       </section>

@@ -10,11 +10,16 @@ import {
   IoHeart,
   IoHeartOutline,
 } from "react-icons/io5";
-import { FiShoppingCart } from "react-icons/fi";
+import { FiShoppingCart, FiUser } from "react-icons/fi";
 import { FaRegHeart } from "react-icons/fa6";
 import { MdHomeFilled } from "react-icons/md";
+import { VscInfo } from "react-icons/vsc";
 import { CiUser } from "react-icons/ci";
+import { LuLogIn } from "react-icons/lu";
+import { HiOutlineUser } from "react-icons/hi";
 import { CgMoreVertical } from "react-icons/cg";
+import { IoShirtOutline, IoLogInOutline } from "react-icons/io5";
+import { GoHome } from "react-icons/go";
 import Swal from "sweetalert2";
 
 function Navbar() {
@@ -160,35 +165,37 @@ function Navbar() {
           {/* Mobile Screen Bottom Menu */}
           <div className="xl:hidden fixed bottom-0 w-full bg-white shadow-lg flex justify-around py-3 left-0 text-3xl items-center">
             <Link href="/" className="flex flex-col items-center">
-              <MdHomeFilled />
+              <GoHome />
               <p className="text-xs mt-1">Home</p>
+            </Link>
+            <Link href="/about" className="flex flex-col items-center">
+              <VscInfo />
+              <p className="text-xs mt-1">About</p>
+            </Link>
+
+            <Link href="/products" className="flex flex-col items-center">
+              <IoShirtOutline />
+              <p className="text-xs mt-1">Products</p>
             </Link>
             <Link href="/cart" className="flex flex-col items-center">
               <IoBagHandleOutline />
               <p className="text-xs mt-1">Cart</p>
-            </Link>
-            <Link href="/products" className="flex flex-col items-center">
-              <IoSearchOutline />
-              <p className="text-xs mt-1">Products</p>
             </Link>
             {user ? (
               <button
                 onClick={handleLogout}
                 className="flex flex-col items-center"
               >
-                <CiUser />
+                <IoLogInOutline />
                 <p className="text-xs mt-1">Logout</p>
               </button>
             ) : (
               <Link href="/sign-in" className="flex flex-col items-center">
-                <CiUser />
+                <IoLogInOutline />
+
                 <p className="text-xs mt-1">Login</p>
               </Link>
             )}
-            <Link href="/about" className="flex flex-col items-center">
-              <CgMoreVertical />
-              <p className="text-xs mt-1">More</p>
-            </Link>
           </div>
         </div>
       </nav>

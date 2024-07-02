@@ -13,7 +13,7 @@ const ShortIntro = (props) => {
     });
   }, []);
   return (
-    <section className="py-10 px-8 font-main">
+    <section className="py-10 max-sm:py-4 px-8 font-main">
       <div className="flex justify-center items-center gap-10 max-lg:flex-col">
         <div>
           <Image
@@ -22,14 +22,14 @@ const ShortIntro = (props) => {
             height={100}
             alt="Main-logo"
           />
-          <p className="text-2xl max-w-2xl mt-2.5 mb-[30px]">
+          <p className="text-2xl max-w-2xl mt-2.5 mb-[30px] max-sm:text-xl">
             Offers you a range of oversized T-shirts with fashionable and unique
             designs of the greatest quality.
           </p>
-          <Link href="/products" className="unique-btn">
-            <p className=" text-xl flex items-center mt-7.5 border-2 border-950 bg-gray-900 text-white w-[210px]  px-3 py-3 rounded hover:bg-white hover:text-950 transition-all duration-300">
+          <Link href="/products" className="unique-btn ">
+            <p className=" text-xl flex items-center mt-7.5 border-2 border-950 bg-gray-900 text-white w-[210px]   px-3 py-3 rounded hover:bg-transparent  hover:text-950 transition-all duration-300">
               Start Shopping
-              <HiOutlineArrowRight className="animation-btn ml-1.5 mt-1 hover:bg-white hover:text-950 " />
+              <HiOutlineArrowRight className="animation-btn ml-1.5 mt-1 hover:text-950 " />
             </p>
           </Link>
         </div>
