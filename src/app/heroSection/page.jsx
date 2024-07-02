@@ -5,9 +5,9 @@ export default function heroSection() {
   return (
     <>
       <Image
-        src="/hero-banner.jpg"
+        src="/Home-Banner.jpg"
         width={900}
-        height={0}
+        height={900}
         className="w-[100%]"
       ></Image>
     </>

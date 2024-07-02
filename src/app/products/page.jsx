@@ -25,7 +25,7 @@ export default function Product() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await fetchDataFromFirestore("products");
+        const data = await fetchDataFromFirestore("product");
         setUserData(data);
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -72,7 +72,7 @@ export default function Product() {
   });
 
   return (
-    <section className="pt-[80px] font-main">
+    <section className="pt-[80px] font-main ">
       {/* Banner Start Here */}
       <div className="relative w-full">
         <Image
@@ -100,9 +100,9 @@ export default function Product() {
       {/* Products title and Grid View Option End here */}
 
       {/* products filter and products cards start here */}
-      <div className="flex flex-col xl:flex-row px-20 max-lg:px-0 mb-10 relative">
+      <div className="flex flex-col xl:flex-row px-20 max-lg:px-0 mb-10 relative ">
         <div
-          className={`w-full xl:w-[25%] pr-5 border-500 xl:border-r-[2px] sticky top-20 h-[calc(100vh-120px)] max-lg:fixed overflow-y-auto max-xl:bg-white max-xl:shadow-lg transition-transform max-xl:top-[80px] py-10 ${
+          className={`w-full xl:w-[25%] pr-5 border-500 xl:border-r-[2px] sticky top-20 h-[calc(100vh-120px)] max-xl:fixed overflow-y-auto max-xl:bg-white max-xl:shadow-lg transition-transform max-xl:top-[80px] py-10 ${
             open ? "max-xl:right-0" : "max-xl:right-[-100%]"
           } max-xl:z-40 max-lg:px-0 transition-all duration-500`}
         >
@@ -164,7 +164,7 @@ export default function Product() {
         </div>
 
         <div className="relative w-full xl:pl-10">
-          <div className="px-10">
+          <div className="px-5">
             <input
               type="text"
               placeholder="Search among products..."
@@ -172,7 +172,7 @@ export default function Product() {
               onChange={handleSearchChange}
               className=" w-full px-16 py-5 outline-none text-xl max-lg:text-lg rounded-full bg-50 "
             />
-            <IoSearchOutline className="text-3xl absolute top-5 max-lg:left-16 left-[100px]" />
+            <IoSearchOutline className="text-3xl absolute top-5 max-xl:left-10 left-[80px]" />
           </div>
           <div className="container mx-auto px-4 py-10 font-main">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">

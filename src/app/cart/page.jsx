@@ -113,8 +113,6 @@ function page() {
                     </div>
                     <div className="flex items-center">
                       <button
-
-
                         onClick={() => handleDecrement(index)}
                         className="bg-gray-950 px-4 py-2 text-white text-xl rounded-s-md"
                       >

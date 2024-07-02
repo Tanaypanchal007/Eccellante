@@ -12,7 +12,7 @@ export default function subscribe() {
           <div className="space-y-5 px-14 max-sm:px-10 py-8 bg-50 rounded-b-md md:rounded-b-none md:rounded-e-md w-full md:w-auto">
             <div>
               <p className="text-2xl font-semibold text-center md:text-left">
-                Subscribe & get 20% off on your next purchase
+                Subscribe & get 10% off on your next purchase
               </p>
             </div>
             <div>

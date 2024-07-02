@@ -66,8 +66,8 @@ export default function Footer() {
             <div className="space-y-5">
               <div className="flex gap-2 items-center ">
                 <CiMail />
-                <Link href="mailto:eccellante.support@gmail.com">
-                  eccellante.support@gmail.com
+                <Link href="mailto:contact.eccelante@gmail.com">
+                  contact.eccelante@gmail.com
                 </Link>
               </div>
               <div className="flex gap-2 items-center">

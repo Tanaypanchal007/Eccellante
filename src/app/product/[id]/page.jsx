@@ -151,7 +151,7 @@ const ProductDetail = () => {
     if (id) {
       const fetchProduct = async () => {
         try {
-          const docRef = doc(db, "products", id);
+          const docRef = doc(db, "product", id);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
             const productData = docSnap.data();
@@ -191,6 +191,7 @@ const ProductDetail = () => {
                   key={index}
                   src={image}
                   width={500}
+                  quality={75}
                   height={500}
                   alt={`Thumbnail ${index + 1}`}
                   className={`cursor-pointer w-[130px] h-[158px] max-md:w-[70px] max-md:h-[73px] ${
@@ -207,6 +208,7 @@ const ProductDetail = () => {
               src={selectedImage}
               alt="Selected"
               layout="fill"
+              quality={75}
               className="object-cover border-2 border-gray-200" // Ensuring image scales and covers the area
             />
           </div>
