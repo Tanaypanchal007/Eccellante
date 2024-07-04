@@ -54,19 +54,70 @@ function page() {
     updateCartSummary(updatedCart);
   };
 
-  const handleCheckout = () => {
-    // Perform checkout logic here, e.g., redirect to checkout page
-    Swal.fire({
-      icon: "success",
-      title: "Checkout Successful!",
-      text: "Thank you for shopping with us.",
-    });
-    // Clear cart after successful checkout
-    setCartItems([]);
-    setTotalItems(0);
-    setTotalPrice(0);
-    localStorage.removeItem("cart");
+  const handleCheckout = async () => {
+    const options = {
+      key: "rzp_test_DwNfgfRaelZuOF", // Replace with your Razorpay key
+      amount: totalPrice * 100, // Razorpay expects amount in paise
+      currency: "INR",
+      name: "Your Company Name",
+      description: "Purchase Description",
+      handler: async function (response) {
+        try {
+          // Add order to Firebase
+          const docRef = await addDoc(collection(db, "orders"), {
+            orderId: response.razorpay_payment_id,
+            amount: totalPrice,
+            items: cartItems,
+            timestamp: new Date(),
+          });
+
+          Swal.fire({
+            icon: "success",
+            title: "Payment Successful!",
+            text: "Your order has been placed.",
+          });
+
+          // Clear cart after successful checkout
+          setCartItems([]);
+          setTotalItems(0);
+          setTotalPrice(0);
+          localStorage.removeItem("cart");
+        } catch (error) {
+          console.error("Error adding document: ", error);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+          });
+        }
+      },
+      prefill: {
+        name: "Meghana",
+        email: "customer@example.com",
+        contact: "8140628151"
+      },
+      theme: {
+        color: "#3399cc"
+      }
+    };
+
+    const rzp1 = new window.Razorpay(options);
+    rzp1.open();
   };
+
+  useEffect(() => {
+    // Load Razorpay script
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    // ... (keep your existing useEffect logic)
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   return (
     <section className="pt-28 font-main">
