@@ -102,9 +102,8 @@ export default function Product() {
       {/* products filter and products cards start here */}
       <div className="flex flex-col xl:flex-row px-20 max-lg:px-0 mb-10 relative ">
         <div
-          className={`w-full xl:w-[25%] pr-5 border-500 xl:border-r-[2px] sticky top-20 h-[calc(100vh-120px)] max-xl:fixed overflow-y-auto max-xl:bg-white max-xl:shadow-lg transition-transform max-xl:top-[80px] py-10 ${
-            open ? "max-xl:right-0" : "max-xl:right-[-100%]"
-          } max-xl:z-40 max-lg:px-0 transition-all duration-500`}
+          className={`w-full xl:w-[25%] pr-5 border-500 xl:border-r-[2px] sticky top-20 h-[calc(100vh-120px)] max-xl:fixed overflow-y-auto max-xl:bg-white max-xl:shadow-lg transition-transform max-xl:top-[80px] py-10 ${open ? "max-xl:right-0" : "max-xl:right-[-100%]"
+            } max-xl:z-40 max-lg:px-0 transition-all duration-500`}
         >
           <div className="border-b-[2px] border-500 pb-7 px-1 max-lg:px-10 max-xl:px-5">
             <h3 className="text-xl font-semibold">CATEGORY</h3>
