@@ -94,7 +94,10 @@ export default function Product() {
       <div className="flex justify-between items-center px-20 max-lg:pl-3 max-lg:pr-9 max-sm:pr-8 max-md:px-5 py-5 sticky top-[10px]  max-lg:top-[70px] z-40 bg-50 max-xl:w-full border-b-[1px] border-600 mb-10">
         <div className="text-2xl font-semibold ">Products</div>
         <div>
-          <FaBars className="text-2xl xl:hidden" onClick={handleFilterMenu} />
+          <FaBars
+            className="text-2xl xl:hidden cursor-pointer"
+            onClick={handleFilterMenu}
+          />
         </div>
       </div>
       {/* Products title and Grid View Option End here */}
@@ -170,7 +173,7 @@ export default function Product() {
               placeholder="Search among products..."
               value={searchQuery}
               onChange={handleSearchChange}
-              className=" w-full px-16 py-5 outline-none text-xl max-lg:text-lg rounded-full bg-50 "
+              className=" w-full px-16 py-5 outline-none text-xl max-lg:text-lg rounded-full bg-white "
             />
             <IoSearchOutline className="text-3xl absolute top-5 max-xl:left-10 left-[80px]" />
           </div>

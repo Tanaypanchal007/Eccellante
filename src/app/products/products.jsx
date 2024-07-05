@@ -18,7 +18,8 @@ const ProductCard = ({ product, removeFromWishlist }) => {
   useEffect(() => {
     if (product && product.id && user) {
       try {
-        const wishlist = JSON.parse(localStorage.getItem("wishlistItems")) || [];
+        const wishlist =
+          JSON.parse(localStorage.getItem("wishlistItems")) || [];
         const isProductWishlisted = wishlist.some(
           (item) => item.id === product.id
         );
@@ -123,21 +124,21 @@ const ProductCard = ({ product, removeFromWishlist }) => {
 
   return (
     <div
-      className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 flex flex-col gap-4 cursor-pointer hover:shadow-lg transition-shadow duration-200 "
+      className="bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col gap-4 cursor-pointer hover:shadow-lg transition-shadow duration-200 "
       onClick={() => {
         if (product && product.id) {
           router.push(`/product/${product.id}`);
         }
       }}
     >
-      <div className="relative h-[480px] sm:h-[420px] md:h-[420px] lg:h-[480px] xl:h-[330px] 2xl:h-[440px] overflow-hidden rounded-t-lg">
+      <div className="relative h-[480px] sm:h-[420px] md:h-[420px] lg:h-[480px] xl:h-[330px] 2xl:h-[440px] overflow-hidden rounded-t-lg p-2">
         {product && product.image && (
           <Image
             src={product.image}
             width={300}
             height={192}
             alt={product.name}
-            className="object-cover w-full h-full hover:scale-105 transition-transform duration-200"
+            className="object-cover w-full h- hover:scale-105 transition-transform duration-200"
           />
         )}
         {product && product.discount && (
@@ -146,7 +147,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
           </div>
         )}
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-[6px] px-3 py-2">
         <div className="flex justify-between items-start">
           <h2 className="text-lg font-bold pr-4">{product && product.name}</h2>
           <div onClick={handleWishlist}>
@@ -157,7 +158,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
             )}
           </div>
         </div>
-        <p className="text-sm text-gray-600 line-clamp-2 h-10">
+        <p className="text-sm text-gray-600 line-clamp-2 h-10 ">
           {product && product.description}
         </p>
 

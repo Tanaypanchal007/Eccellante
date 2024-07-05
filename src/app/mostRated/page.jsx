@@ -108,10 +108,10 @@ function MostRated() {
   ];
   return (
     <div className="container mx-auto px-4 max-sm:px-0 mt-10 py-10 max-sm:py-5 max-sm:mt-4 font-main">
-      <h1 className="text-4xl max-sm:text-3xl max-sm:w-[160px] text-center mb-10 border-b-4 w-[230px]  font-bold pb-4 m-auto border-950">
+      <h1 className="text-4xl max-sm:text-2xl max-sm:w-[170px] text-center mb-10 border-b-4 w-[230px]  font-bold pb-4 m-auto border-950">
         Most Rated
       </h1>
-      <div className="grid  grid-cols-2 max-sm:px-5 md:grid-cols-2 lg:grid-cols-4 gap-10 max-sm:gap-2 mx-24 max-sm:mx-0">
+      <div className="grid  grid-cols-2 max-sm:px-5 md:grid-cols-2 lg:grid-cols-4 gap-10 max-sm:gap-2 mx-18 max-sm:mx-0 max-lg:mx-5">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
