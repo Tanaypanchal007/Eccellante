@@ -1,12 +1,18 @@
+"use client";
 import React from "react";
 import Link from "next/link";
+
 import { MdKeyboardArrowRight } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 function exchangeAndReturnPolicy() {
+  const router = useRouter();
   return (
     <section>
       <div className="pt-28 flex px-4 items-center justify-center font-main bg-100 py-7 text-950 font-semibold text-xl">
-        <Link href="/">Home</Link>
+        <p onClick={() => router.push("/")} className="cursor-pointer">
+          Home
+        </p>
         <MdKeyboardArrowRight />
         <p>Exchange & Return Policy</p>
       </div>

@@ -9,8 +9,14 @@ import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebaseConfig";
 import { useRouter } from "next/navigation";
-import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
-
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
 
 const ProductCard = ({ product, removeFromWishlist }) => {
   const router = useRouter();
@@ -18,18 +24,6 @@ const ProductCard = ({ product, removeFromWishlist }) => {
   const [user, loading] = useAuthState(auth);
 
   useEffect(() => {
-<<<<<<< HEAD
-    if (product && product.id && user) {
-      try {
-        const wishlist =
-          JSON.parse(localStorage.getItem("wishlistItems")) || [];
-        const isProductWishlisted = wishlist.some(
-          (item) => item.id === product.id
-        );
-        setIsWishlisted(isProductWishlisted);
-      } catch (error) {
-        console.error("Error reading from localStorage:", error);
-=======
     const fetchWishlist = async () => {
       if (product && product.id && user) {
         try {
@@ -37,13 +31,14 @@ const ProductCard = ({ product, removeFromWishlist }) => {
           const userSnap = await getDoc(userRef);
           if (userSnap.exists()) {
             const wishlist = userSnap.data().items || [];
-            const isProductWishlisted = wishlist.some((item) => item.id === product.id);
+            const isProductWishlisted = wishlist.some(
+              (item) => item.id === product.id
+            );
             setIsWishlisted(isProductWishlisted);
           }
         } catch (error) {
           console.error("Error fetching wishlist from Firestore:", error);
         }
->>>>>>> d17d42cf46d61e15fe578b69bd36b4af697dc023
       }
     };
     fetchWishlist();
@@ -66,21 +61,21 @@ const ProductCard = ({ product, removeFromWishlist }) => {
       });
       return;
     }
-  
+
     if (!product || !product.id) {
       return;
     }
-  
+
     try {
       const userRef = doc(db, "wishlists", user.uid);
       const userSnap = await getDoc(userRef);
-  
+
       // Check if the document exists
       if (!userSnap.exists()) {
         // If it doesn't exist, create it with an empty 'items' array
         await setDoc(userRef, { items: [] });
       }
-  
+
       // Now update the wishlist based on current state
       if (isWishlisted) {
         await updateDoc(userRef, {
@@ -107,7 +102,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
       console.error("Error updating Firestore:", error);
     }
   };
-  
+
   const handleAddToCart = (e) => {
     e.stopPropagation();
     if (!user) {

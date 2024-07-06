@@ -60,13 +60,15 @@
 // }
 
 // export default MostRated;
-
+"use client";
 import React from "react";
 import ProductCard from "../mostRated/mostRatedProducts";
-import Link from "next/link";
 import { HiOutlineArrowRight } from "react-icons/hi";
+import { useRouter } from "next/navigation";
 
 function MostRated() {
+  const router = useRouter();
+
   const products = [
     {
       id: 1,
@@ -117,12 +119,12 @@ function MostRated() {
         ))}
       </div>
       <div className="flex items-center justify-center mt-10">
-        <Link
-          href="/products"
-          className="flex font-bold px-6 py-2 rounded items-center border-2 border-950  hover:bg-950 hover:text-white hover:font-medium transition-all duration-300"
+        <p
+          onClick={() => router.push("/products")}
+          className="cursor-pointer flex font-bold px-6 py-2 rounded items-center border-2 border-950  hover:bg-950 hover:text-white hover:font-medium transition-all duration-300"
         >
           Explore More <HiOutlineArrowRight className="ml-2" />
-        </Link>
+        </p>
       </div>
     </div>
   );

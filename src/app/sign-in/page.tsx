@@ -5,10 +5,11 @@ import { auth } from "../firebaseConfig";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import React from "react";
-import Link from "next/link";
 import { Oval } from "react-loader-spinner";
 
 const SignIn = () => {
+
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signInWithEmailAndPassword, user, loading, error] =
@@ -104,7 +105,7 @@ const SignIn = () => {
           className="border border-gray-800 outline-none w-full px-3 py-1 rounded mt-2"
         />
         </div>
-        <p className="mt-2 text-center text-gray-700 font-medium">Don't have an account ? <Link href="/sign-up" className="font-bold">Sign Up</Link></p>
+        <p className="mt-2 text-center text-gray-700 font-medium flex gap-1 justify-center">Don't have an account ? <p onClick={()=>router.push("/sign-up")} className="font-bold cursor-pointer">Sign Up</p></p>
         <button
           onClick={handleSignIn}
           className="flex gap-2 justify-center items-center py-2 bg-gray-950 w-full text-white rounded mt-2"

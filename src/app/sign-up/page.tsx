@@ -5,7 +5,7 @@ import { auth } from "../firebaseConfig";
 import Swal from "sweetalert2";
 import React from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+
 import { Oval } from "react-loader-spinner";
 
 const SignUp = () => {
@@ -144,7 +144,7 @@ const SignUp = () => {
           className="border border-gray-800 outline-none w-full px-3 py-1 rounded mt-2"
         />
         </div>
-        <p className="mt-2 text-center text-gray-700 font-medium">Already have an account ? <Link href="/sign-in" className=" font-bold">Sign In</Link></p>
+        <p className="mt-2 text-center text-gray-700 font-medium flex gap-1 justify-center">Already have an account ? <p onClick={()=>router.push("/sign-in")} className=" font-bold cursor-pointer">Sign In</p></p>
         <button
           onClick={handleSignUp}
           className="flex gap-2 justify-center items-center py-2 bg-gray-950 w-full text-white rounded mt-2"

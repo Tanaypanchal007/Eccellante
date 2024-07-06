@@ -1,12 +1,16 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+
 import { CiMail } from "react-icons/ci";
 import { IoCallOutline } from "react-icons/io5";
 import { FaInstagram } from "react-icons/fa";
 import { FaThreads } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 
 export default function Footer() {
+  const router = useRouter();
   return (
     <>
       <footer className="bg-950 py-10 text-white font-main mt-[20px] max-lg:mb-10">
@@ -55,11 +59,36 @@ export default function Footer() {
               FOR CUSTOMERS
             </h2>
             <ul className="flex flex-col space-y-7 max-lg:space-y-4">
-              <Link href="/footer">Gift Cards</Link>
-              <Link href="/privacyPolicy">Privacy Policy</Link>
-              <Link href="/privacyPolicy">Terms & Conditions</Link>
-              <Link href="/shippingandReturnPolicy">Shipping & Return</Link>
-              <Link href="/exchangeAndReturnPolicy">Exchange & Return</Link>
+              <p
+                onClick={() => router.push("/footer")}
+                className="cursor-pointer"
+              >
+                Gift Cards
+              </p>
+              <p
+                onClick={() => router.push("/privacyPolicy")}
+                className="cursor-pointer"
+              >
+                Privacy Policy
+              </p>
+              <p
+                onClick={() => router.push("/privacyPolicy")}
+                className="cursor-pointer"
+              >
+                Terms & Conditions
+              </p>
+              <p
+                onClick={() => router.push("/shippingandReturnPolicy")}
+                className="cursor-pointer"
+              >
+                Shipping & Return
+              </p>
+              <p
+                onClick={() => router.push("/exchangeAndReturnPolicy")}
+                className="cursor-pointer"
+              >
+                Exchange & Return
+              </p>
             </ul>
           </div>
           {/* Contact Section */}
