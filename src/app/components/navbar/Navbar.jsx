@@ -86,7 +86,7 @@ function Navbar() {
             <li className="group">
               <p
                 onClick={() => router.push("/")}
-                className="cursor-pointer relative after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-[3px] after:bg-gray-800 after:transition-all after:duration-300 group-hover:after:w-full"
+                className="cursor-pointer relative after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-[3px] after:bg-gray-800 after:transition-all after:duration-500 group-hover:after:w-full"
               >
                 Home
               </p>
@@ -94,7 +94,7 @@ function Navbar() {
             <li className="group">
               <p
                 onClick={() => router.push("/about")}
-                className="cursor-pointer relative after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-[3px] after:bg-gray-800 after:transition-all after:duration-300 group-hover:after:w-full"
+                className="cursor-pointer relative after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-[3px] after:bg-gray-800 after:transition-all after:duration-500 group-hover:after:w-full"
               >
                 About
               </p>
@@ -102,7 +102,7 @@ function Navbar() {
             <li className="group">
               <p
                 onClick={() => router.push("/contact")}
-                className="cursor-pointer relative  after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-[3px] after:bg-gray-800 after:transition-all after:duration-300 group-hover:after:w-full"
+                className="cursor-pointer relative  after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-[3px] after:bg-gray-800 after:transition-all after:duration-500 group-hover:after:w-full"
               >
                 Contact
               </p>
@@ -110,7 +110,7 @@ function Navbar() {
             <li className="group">
               <p
                 onClick={() => router.push("/products")}
-                className="cursor-pointer relative after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-[3px] after:bg-gray-800 after:transition-all after:duration-300 group-hover:after:w-full"
+                className="cursor-pointer relative after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-[3px] after:bg-gray-800 after:transition-all after:duration-500 group-hover:after:w-full"
               >
                 Products
               </p>
