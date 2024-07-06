@@ -1,7 +1,8 @@
 import { initializeApp, getApp, getApps } from "firebase/app";
-import { getFirestore } from "firebase/firestore"
+// import { getFirestore } from "firebase/firestore"
 import { getStorage } from "firebase/storage";
 import { getAuth, setPersistence, browserSessionPersistence } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyCsy793olT_wBPcJONufCFlxeSWqnQCOi4",
   authDomain: "newproject-c5039.firebaseapp.com",

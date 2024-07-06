@@ -7,8 +7,10 @@ import Swal from "sweetalert2";
 import { FiShoppingBag } from "react-icons/fi";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
 import { useRouter } from "next/navigation";
+import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+
 
 const ProductCard = ({ product, removeFromWishlist }) => {
   const router = useRouter();
@@ -16,6 +18,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
   const [user, loading] = useAuthState(auth);
 
   useEffect(() => {
+<<<<<<< HEAD
     if (product && product.id && user) {
       try {
         const wishlist =
@@ -26,11 +29,27 @@ const ProductCard = ({ product, removeFromWishlist }) => {
         setIsWishlisted(isProductWishlisted);
       } catch (error) {
         console.error("Error reading from localStorage:", error);
+=======
+    const fetchWishlist = async () => {
+      if (product && product.id && user) {
+        try {
+          const userRef = doc(db, "wishlists", user.uid);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            const wishlist = userSnap.data().items || [];
+            const isProductWishlisted = wishlist.some((item) => item.id === product.id);
+            setIsWishlisted(isProductWishlisted);
+          }
+        } catch (error) {
+          console.error("Error fetching wishlist from Firestore:", error);
+        }
+>>>>>>> d17d42cf46d61e15fe578b69bd36b4af697dc023
       }
-    }
+    };
+    fetchWishlist();
   }, [product, user]);
 
-  const handleWishlist = (e) => {
+  const handleWishlist = async (e) => {
     e.stopPropagation();
     if (!user) {
       Swal.fire({
@@ -47,16 +66,26 @@ const ProductCard = ({ product, removeFromWishlist }) => {
       });
       return;
     }
-
+  
     if (!product || !product.id) {
       return;
     }
-
+  
     try {
-      let wishlist = JSON.parse(localStorage.getItem("wishlistItems")) || [];
-
+      const userRef = doc(db, "wishlists", user.uid);
+      const userSnap = await getDoc(userRef);
+  
+      // Check if the document exists
+      if (!userSnap.exists()) {
+        // If it doesn't exist, create it with an empty 'items' array
+        await setDoc(userRef, { items: [] });
+      }
+  
+      // Now update the wishlist based on current state
       if (isWishlisted) {
-        wishlist = wishlist.filter((item) => item.id !== product.id);
+        await updateDoc(userRef, {
+          items: arrayRemove(product),
+        });
         setIsWishlisted(false);
         Swal.fire({
           icon: "success",
@@ -64,7 +93,9 @@ const ProductCard = ({ product, removeFromWishlist }) => {
           text: "Item has been removed from your wishlist.",
         });
       } else {
-        wishlist.push(product);
+        await updateDoc(userRef, {
+          items: arrayUnion(product),
+        });
         setIsWishlisted(true);
         Swal.fire({
           icon: "success",
@@ -72,13 +103,11 @@ const ProductCard = ({ product, removeFromWishlist }) => {
           text: "Item has been added to your wishlist.",
         });
       }
-
-      localStorage.setItem("wishlistItems", JSON.stringify(wishlist));
-      window.dispatchEvent(new Event("wishlistUpdated"));
     } catch (error) {
-      console.error("Error updating localStorage:", error);
+      console.error("Error updating Firestore:", error);
     }
   };
+  
   const handleAddToCart = (e) => {
     e.stopPropagation();
     if (!user) {
