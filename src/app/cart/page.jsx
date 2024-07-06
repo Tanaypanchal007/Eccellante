@@ -6,31 +6,14 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebaseConfig";
 import { doc, onSnapshot,updateDoc, arrayRemove } from "firebase/firestore";
+import { useRouter } from "next/navigation";
 const Sizes = ["S", "M", "L", "XL", "XXL"];
 function page() {
   const [user, loading] = useAuthState(auth);
   const [cartItems, setCartItems] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
-
-  // useEffect(() => {
-  //   // Load cart items from localStorage on component mount
-  //   const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-  //   setCartItems(savedCart);
-  //   updateCartSummary(savedCart);
-  // }, []);
-
-  // const updateCartSummary = (cart) => {
-  //   // Calculate total items and total price
-  //   let total = 0;
-  //   let price = 0;
-  //   cart.forEach((item) => {
-  //     total += item.quantity;
-  //     price += item.price * item.quantity;
-  //   });
-  //   setTotalItems(total);
-  //   setTotalPrice(price);
-  // };
+  const router = useRouter();
 
   const handleIncrement = (index) => {
     const updatedCart = [...cartItems];
@@ -50,12 +33,6 @@ function page() {
     }
   };
 
-  // const handleRemove = (index) => {
-  //   const updatedCart = cartItems.filter((_, i) => i !== index);
-  //   setCartItems(updatedCart);
-  //   localStorage.setItem("cart", JSON.stringify(updatedCart));
-  //   updateCartSummary(updatedCart);
-  // };
   useEffect(() => {
     let unsubscribe;
 
@@ -126,56 +103,66 @@ function page() {
     }
   };
 
-  const handleCheckout = async () => {
-    const options = {
-      key: "rzp_test_DwNfgfRaelZuOF", // Replace with your Razorpay key
-      amount: totalPrice * 100, // Razorpay expects amount in paise
-      currency: "INR",
-      name: "Your Company Name",
-      description: "Purchase Description",
-      handler: async function (response) {
-        try {
-          // Add order to Firebase
-          const docRef = await addDoc(collection(db, "orders"), {
-            orderId: response.razorpay_payment_id,
-            amount: totalPrice,
-            items: cartItems,
-            timestamp: new Date(),
-          }); e
+  const handleCheckout = () => {
+    const queryParams = new URLSearchParams({
+      totalItems: totalItems.toString(),
+      totalPrice: totalPrice.toString(),
+      // You can calculate the discount here if needed
+      totalDiscount: "0" // Replace with actual discount calculation
+    }).toString();
 
-          Swal.fire({
-            icon: "success",
-            title: "Payment Successful!",
-            text: "Your order has been placed.",
-          });
-
-          // Clear cart after successful checkout
-          setCartItems([]);
-          setTotalItems(0);
-          setTotalPrice(0);
-          localStorage.removeItem("cart");
-        } catch (error) {
-          console.error("Error adding document: ", error);
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Something went wrong!",
-          });
-        }
-      },
-      prefill: {
-        name: "Meghana",
-        email: "customer@example.com",
-        contact: "8140628151",
-      },
-      theme: {
-        color: "#3399cc",
-      },
-    };
-
-    const rzp1 = new window.Razorpay(options);
-    rzp1.open();
+    router.push(`/checkoutFrom?${queryParams}`);
   };
+  // const handleCheckout = async () => {
+  //   const options = {
+  //     key: "rzp_test_DwNfgfRaelZuOF", // Replace with your Razorpay key
+  //     amount: totalPrice * 100, // Razorpay expects amount in paise
+  //     currency: "INR",
+  //     name: "Your Company Name",
+  //     description: "Purchase Description",
+  //     handler: async function (response) {
+  //       try {
+  //         // Add order to Firebase
+  //         const docRef = await addDoc(collection(db, "orders"), {
+  //           orderId: response.razorpay_payment_id,
+  //           amount: totalPrice,
+  //           items: cartItems,
+  //           timestamp: new Date(),
+  //         }); e
+
+  //         Swal.fire({
+  //           icon: "success",
+  //           title: "Payment Successful!",
+  //           text: "Your order has been placed.",
+  //         });
+
+  //         // Clear cart after successful checkout
+  //         setCartItems([]);
+  //         setTotalItems(0);
+  //         setTotalPrice(0);
+  //         localStorage.removeItem("cart");
+  //       } catch (error) {
+  //         console.error("Error adding document: ", error);
+  //         Swal.fire({
+  //           icon: "error",
+  //           title: "Oops...",
+  //           text: "Something went wrong!",
+  //         });
+  //       }
+  //     },
+  //     prefill: {
+  //       name: "Meghana",
+  //       email: "customer@example.com",
+  //       contact: "8140628151",
+  //     },
+  //     theme: {
+  //       color: "#3399cc",
+  //     },
+  //   };
+
+  //   const rzp1 = new window.Razorpay(options);
+  //   rzp1.open();
+  // };
 
   useEffect(() => {
     // Load Razorpay script
@@ -285,6 +272,7 @@ function page() {
               </div>
               <button
                 onClick={handleCheckout}
+                // onClick={() => router.push("/checkoutFrom")}
                 className="bg-gray-950 hover:bg-gray-900 text-white px-5 py-2 rounded-md w-full"
               >
                 Checkout
