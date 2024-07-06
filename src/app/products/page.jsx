@@ -70,24 +70,18 @@ export default function Product() {
       });
     return matchesSearchQuery && matchesPriceRange;
   });
-
   return (
     <section className="pt-[80px] font-main ">
       {/* Banner Start Here */}
-      <div className="relative w-full">
+      <div className="relative w-full ">
         <Image
-          src="/shop-banner.jpg"
+          src="/Banner3.jpg"
           height={900}
           width={1000}
           className="w-full"
           alt="Shop Banner"
         />
-        <div className="absolute inset-0 bg-black opacity-30"></div>
-        <div className="absolute inset-0 flex items-center justify-left pl-10">
-          <p className="text-7xl font-semibold tracking-widest text-white">
-            The Latest <br /> Unisex Trends..
-          </p>
-        </div>
+        <div className="absolute inset-0 bg-black opacity-20"></div>
       </div>
       {/* Banner End Here */}
       {/* Products title and Grid View Option start here */}

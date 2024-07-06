@@ -12,12 +12,12 @@ import {
 } from "react-icons/io5";
 import { FiShoppingCart, FiUser } from "react-icons/fi";
 import { FaRegHeart } from "react-icons/fa6";
-import { MdHomeFilled } from "react-icons/md";
+// import { MdHomeFilled } from "react-icons/md";
 import { VscInfo } from "react-icons/vsc";
-import { CiUser } from "react-icons/ci";
-import { LuLogIn } from "react-icons/lu";
-import { HiOutlineUser } from "react-icons/hi";
-import { CgMoreVertical } from "react-icons/cg";
+// import { CiUser } from "react-icons/ci";
+// import { LuLogIn } from "react-icons/lu";
+// import { HiOutlineUser } from "react-icons/hi";
+// import { CgMoreVertical } from "react-icons/cg";
 import { IoShirtOutline, IoLogInOutline } from "react-icons/io5";
 import { GoHome } from "react-icons/go";
 import Swal from "sweetalert2";

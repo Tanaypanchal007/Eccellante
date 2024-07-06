@@ -158,10 +158,10 @@ const ProductCard = ({ product, removeFromWishlist }) => {
             )}
           </div>
         </div>
+        <p>{product.label}</p>
         <p className="text-sm text-gray-600 line-clamp-2 h-10 ">
           {product && product.description}
         </p>
-
         <div className="flex gap-2 h-9">
           {product && product.sizes && product.sizes.length > 0 ? (
             product.sizes.length > 5 ? (
@@ -196,7 +196,6 @@ const ProductCard = ({ product, removeFromWishlist }) => {
             <p className="text-xs text-gray-500">No sizes available</p>
           )}
         </div>
-
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-baseline">
             <p className="text-black text-xl font-semibold">
