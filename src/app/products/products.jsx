@@ -22,6 +22,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
   const router = useRouter();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [user, loading] = useAuthState(auth);
+  const [isInCart, setIsInCart] = useState(false);
 
   useEffect(() => {
     const fetchWishlist = async () => {
@@ -103,7 +104,29 @@ const ProductCard = ({ product, removeFromWishlist }) => {
     }
   };
 
-  const handleAddToCart = (e) => {
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      if (product && product.id && user) {
+        try {
+          const userRef = doc(db, "carts", user.uid);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            const cart = userSnap.data().items || [];
+            const isProductInCart = cart.some((item) => item.id === product.id);
+            setIsInCart(isProductInCart);
+          }
+        } catch (error) {
+          console.error("Error fetching cart from Firestore:", error);
+        }
+      }
+    };
+    fetchCart();
+  }, [product, user]);
+
+  // ... (keep existing handleWishlist function)
+
+  const handleAddToCart = async (e) => {
     e.stopPropagation();
     if (!user) {
       Swal.fire({
@@ -115,7 +138,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
         cancelButtonText: "Cancel",
       }).then((result) => {
         if (result.isConfirmed) {
-          router.push("/sign-in"); // Replace with your login page route
+          router.push("/sign-in");
         }
       });
       return;
@@ -126,26 +149,38 @@ const ProductCard = ({ product, removeFromWishlist }) => {
     }
 
     try {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const userRef = doc(db, "carts", user.uid);
+      const userSnap = await getDoc(userRef);
 
-      const existingItem = cart.find((item) => item.id === product.id);
-      if (existingItem) {
-        existingItem.quantity += 1;
-      } else {
-        cart.push({ ...product, quantity: 1 });
+      if (!userSnap.exists()) {
+        await setDoc(userRef, { items: [] });
       }
 
-      localStorage.setItem("cart", JSON.stringify(cart));
-      Swal.fire({
-        icon: "success",
-        title: "Added to Cart",
-        text: "Item has been added to your cart.",
-      });
+      if (isInCart) {
+        await updateDoc(userRef, {
+          items: arrayRemove({ ...product, quantity: 1 }),
+        });
+        setIsInCart(false);
+        Swal.fire({
+          icon: "success",
+          title: "Removed from Cart",
+          text: "Item has been removed from your cart.",
+        });
+      } else {
+        await updateDoc(userRef, {
+          items: arrayUnion({ ...product, quantity: 1 }),
+        });
+        setIsInCart(true);
+        Swal.fire({
+          icon: "success",
+          title: "Added to Cart",
+          text: "Item has been added to your cart.",
+        });
+      }
     } catch (error) {
-      console.error("Error updating localStorage:", error);
+      console.error("Error updating Firestore:", error);
     }
   };
-
   return (
     <div
       className="bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col gap-4 cursor-pointer hover:shadow-lg transition-shadow duration-200 "
@@ -234,7 +269,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
             onClick={handleAddToCart}
           >
             <FiShoppingBag className="mr-2" />
-            <span>Add</span>
+            <span>{isInCart ? "Remove" : "Add"}</span>
           </div>
         </div>
       </div>

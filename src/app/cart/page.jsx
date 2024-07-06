@@ -3,31 +3,34 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Swal from "sweetalert2";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, db } from "../firebaseConfig";
+import { doc, onSnapshot,updateDoc, arrayRemove } from "firebase/firestore";
 const Sizes = ["S", "M", "L", "XL", "XXL"];
 function page() {
+  const [user, loading] = useAuthState(auth);
   const [cartItems, setCartItems] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
 
-  useEffect(() => {
-    // Load cart items from localStorage on component mount
-    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCartItems(savedCart);
-    updateCartSummary(savedCart);
-  }, []);
+  // useEffect(() => {
+  //   // Load cart items from localStorage on component mount
+  //   const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
+  //   setCartItems(savedCart);
+  //   updateCartSummary(savedCart);
+  // }, []);
 
-  const updateCartSummary = (cart) => {
-    // Calculate total items and total price
-    let total = 0;
-    let price = 0;
-    cart.forEach((item) => {
-      total += item.quantity;
-      price += item.price * item.quantity;
-    });
-    setTotalItems(total);
-    setTotalPrice(price);
-  };
+  // const updateCartSummary = (cart) => {
+  //   // Calculate total items and total price
+  //   let total = 0;
+  //   let price = 0;
+  //   cart.forEach((item) => {
+  //     total += item.quantity;
+  //     price += item.price * item.quantity;
+  //   });
+  //   setTotalItems(total);
+  //   setTotalPrice(price);
+  // };
 
   const handleIncrement = (index) => {
     const updatedCart = [...cartItems];
@@ -47,11 +50,80 @@ function page() {
     }
   };
 
-  const handleRemove = (index) => {
-    const updatedCart = cartItems.filter((_, i) => i !== index);
-    setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    updateCartSummary(updatedCart);
+  // const handleRemove = (index) => {
+  //   const updatedCart = cartItems.filter((_, i) => i !== index);
+  //   setCartItems(updatedCart);
+  //   localStorage.setItem("cart", JSON.stringify(updatedCart));
+  //   updateCartSummary(updatedCart);
+  // };
+  useEffect(() => {
+    let unsubscribe;
+
+    const setupCartListener = async () => {
+      if (user) {
+        const userRef = doc(db, "carts", user.uid);
+        unsubscribe = onSnapshot(userRef, (doc) => {
+          if (doc.exists()) {
+            const cart = doc.data().items || [];
+            setCartItems(cart);
+            updateCartSummary(cart);
+          } else {
+            setCartItems([]);
+            updateCartSummary([]);
+          }
+        }, (error) => {
+          console.error("Error fetching cart from Firestore:", error);
+        });
+      }
+    };
+
+    if (!loading) {
+      setupCartListener();
+    }
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [user, loading]);
+
+  const updateCartSummary = (cart) => {
+    let total = 0;
+    let price = 0;
+    cart.forEach((item) => {
+      total += item.quantity;
+      price += item.price * item.quantity;
+    });
+    setTotalItems(total);
+    setTotalPrice(price);
+  };
+
+  const updateQuantity = async (index, newQuantity) => {
+    if (newQuantity < 1) return;
+
+    const updatedCart = [...cartItems];
+    updatedCart[index].quantity = newQuantity;
+
+    try {
+      const userRef = doc(db, "carts", user.uid);
+      await updateDoc(userRef, { items: updatedCart });
+    } catch (error) {
+      console.error("Error updating cart in Firestore:", error);
+    }
+  };
+
+  const handleRemove = async (index) => {
+    console.log("remove");
+    const itemToRemove = cartItems[index];
+    try {
+      const userRef = doc(db, "carts", user.uid);
+      await updateDoc(userRef, {
+        items: arrayRemove(itemToRemove),
+      });
+    } catch (error) {
+      console.error("Error removing item from cart in Firestore:", error);
+    }
   };
 
   const handleCheckout = async () => {
@@ -69,7 +141,7 @@ function page() {
             amount: totalPrice,
             items: cartItems,
             timestamp: new Date(),
-          });e
+          }); e
 
           Swal.fire({
             icon: "success",
@@ -118,7 +190,13 @@ function page() {
       document.body.removeChild(script);
     };
   }, []);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
+  if (!user) {
+    return <div>Please log in to view your cart.</div>;
+  }
   return (
     <section className="pt-28 font-main">
       <div className="flex flex-col lg:flex-row justify-around">

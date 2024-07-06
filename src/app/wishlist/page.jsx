@@ -1,36 +1,51 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import ProductCard from "../products/products";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, db } from "../firebaseConfig";
+import { doc, onSnapshot } from "firebase/firestore";
 
 const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
+  const [user, loading] = useAuthState(auth);
 
   useEffect(() => {
-    const wishlistItems = JSON.parse(localStorage.getItem("wishlistItems")) || [];
-    setWishlist(wishlistItems);
+    let unsubscribe;
 
-    const handleWishlistUpdate = () => {
-      const updatedWishlist = JSON.parse(localStorage.getItem("wishlistItems")) || [];
-      setWishlist(updatedWishlist);
+    const setupWishlistListener = async () => {
+      if (user) {
+        const userRef = doc(db, "wishlists", user.uid);
+        unsubscribe = onSnapshot(userRef, (doc) => {
+          if (doc.exists()) {
+            const wishlistItems = doc.data().items || [];
+            setWishlist(wishlistItems);
+          } else {
+            setWishlist([]);
+          }
+        }, (error) => {
+          console.error("Error fetching wishlist from Firestore:", error);
+        });
+      }
     };
 
-    window.addEventListener("wishlistUpdated", handleWishlistUpdate);
+    if (!loading) {
+      setupWishlistListener();
+    }
+
     return () => {
-      window.removeEventListener("wishlistUpdated", handleWishlistUpdate);
+      if (unsubscribe) {
+        unsubscribe();
+      }
     };
-  }, []);
+  }, [user, loading]);
 
-  const removeFromWishlist = (productId) => {
-    const updatedWishlist = wishlist.filter(
-      (product) => product.id !== productId
-    );
-    setWishlist(updatedWishlist);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-    localStorage.setItem("wishlistItems", JSON.stringify(updatedWishlist));
-
-    window.dispatchEvent(new Event("wishlistUpdated"));
-  };
+  if (!user) {
+    return <div>Please log in to view your wishlist.</div>;
+  }
 
   return (
     <div className="container mx-auto py-8">
@@ -41,7 +56,7 @@ const Wishlist = () => {
             <ProductCard
               key={product.id}
               product={product}
-              removeFromWishlist={() => removeFromWishlist(product.id)}
+              removeFromWishlist={() => { }} // This is now handled automatically by the listener
             />
           ))
         ) : (
