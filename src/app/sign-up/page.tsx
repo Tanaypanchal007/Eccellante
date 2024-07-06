@@ -5,7 +5,6 @@ import { auth } from "../firebaseConfig";
 import Swal from "sweetalert2";
 import React from "react";
 import { useRouter } from "next/navigation";
-
 import { Oval } from "react-loader-spinner";
 
 const SignUp = () => {
