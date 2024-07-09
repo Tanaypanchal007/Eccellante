@@ -5,7 +5,6 @@ import { auth } from "../firebaseConfig";
 import Swal from "sweetalert2";
 import React from "react";
 import { useRouter } from "next/navigation";
-
 import { Oval } from "react-loader-spinner";
 
 const SignUp = () => {
@@ -149,7 +148,6 @@ const SignUp = () => {
           onClick={handleSignUp}
           className="flex gap-2 justify-center items-center py-2 bg-gray-950 w-full text-white rounded mt-2"
         >
-          Sign Up
          {loading ? "Signing Up..." : "Sign Up"}
         </button>
       </div>

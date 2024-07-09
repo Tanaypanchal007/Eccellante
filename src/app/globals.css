@@ -6,6 +6,7 @@ body {
     background: #f1f1f1;
     /* background: #e5d4d1; */
 }
+
 body::-webkit-scrollbar {
     display: none;
 }
