@@ -70,31 +70,28 @@ export default function Product() {
       });
     return matchesSearchQuery && matchesPriceRange;
   });
-
   return (
     <section className="pt-[80px] font-main ">
       {/* Banner Start Here */}
-      <div className="relative w-full">
+      <div className="relative w-full ">
         <Image
-          src="/shop-banner.jpg"
+          src="/Banner3.jpg"
           height={900}
           width={1000}
           className="w-full"
           alt="Shop Banner"
         />
-        <div className="absolute inset-0 bg-black opacity-30"></div>
-        <div className="absolute inset-0 flex items-center justify-left pl-10">
-          <p className="text-7xl font-semibold tracking-widest text-white">
-            The Latest <br /> Unisex Trends..
-          </p>
-        </div>
+        <div className="absolute inset-0 bg-black opacity-20"></div>
       </div>
       {/* Banner End Here */}
       {/* Products title and Grid View Option start here */}
       <div className="flex justify-between items-center px-20 max-lg:pl-3 max-lg:pr-9 max-sm:pr-8 max-md:px-5 py-5 sticky top-[10px]  max-lg:top-[70px] z-40 bg-50 max-xl:w-full border-b-[1px] border-600 mb-10">
         <div className="text-2xl font-semibold ">Products</div>
         <div>
-          <FaBars className="text-2xl xl:hidden" onClick={handleFilterMenu} />
+          <FaBars
+            className="text-2xl xl:hidden cursor-pointer"
+            onClick={handleFilterMenu}
+          />
         </div>
       </div>
       {/* Products title and Grid View Option End here */}
@@ -102,8 +99,9 @@ export default function Product() {
       {/* products filter and products cards start here */}
       <div className="flex flex-col xl:flex-row px-20 max-lg:px-0 mb-10 relative ">
         <div
-          className={`w-full xl:w-[25%] pr-5 border-500 xl:border-r-[2px] sticky top-20 h-[calc(100vh-120px)] max-xl:fixed overflow-y-auto max-xl:bg-white max-xl:shadow-lg transition-transform max-xl:top-[80px] py-10 ${open ? "max-xl:right-0" : "max-xl:right-[-100%]"
-            } max-xl:z-40 max-lg:px-0 transition-all duration-500`}
+          className={`w-full xl:w-[25%] pr-5 border-500 xl:border-r-[2px] sticky top-20 h-[calc(100vh-120px)] max-xl:fixed overflow-y-auto max-xl:bg-white max-xl:shadow-lg transition-transform max-xl:top-[80px] py-10 ${
+            open ? "max-xl:right-0" : "max-xl:right-[-100%]"
+          } max-xl:z-40 max-lg:px-0 transition-all duration-500`}
         >
           <div className="border-b-[2px] border-500 pb-7 px-1 max-lg:px-10 max-xl:px-5">
             <h3 className="text-xl font-semibold">CATEGORY</h3>
@@ -169,7 +167,7 @@ export default function Product() {
               placeholder="Search among products..."
               value={searchQuery}
               onChange={handleSearchChange}
-              className=" w-full px-16 py-5 outline-none text-xl max-lg:text-lg rounded-full bg-50 "
+              className=" w-full px-16 py-5 outline-none text-xl max-lg:text-lg rounded-full bg-white "
             />
             <IoSearchOutline className="text-3xl absolute top-5 max-xl:left-10 left-[80px]" />
           </div>

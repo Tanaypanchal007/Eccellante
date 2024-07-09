@@ -60,9 +60,11 @@ export default function Contact() {
         }
       );
   };
-
   return (
     <section className="pt-28 font-main">
+      <h1 className="text-4xl max-sm:text-2xl max-sm:w-[170px] text-center mb-5 border-b-4 w-[230px]  font-bold pb-4 m-auto border-950">
+        Contact Us
+      </h1>
       <div className="text-center pb-10 text-lg font-medium">
         <p>Contact with us to share your feedback</p>
         <p>about our clothings</p>

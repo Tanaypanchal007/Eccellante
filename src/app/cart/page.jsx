@@ -3,31 +3,17 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Swal from "sweetalert2";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, db } from "../firebaseConfig";
+import { doc, onSnapshot,updateDoc, arrayRemove } from "firebase/firestore";
+import { useRouter } from "next/navigation";
 const Sizes = ["S", "M", "L", "XL", "XXL"];
 function page() {
+  const [user, loading] = useAuthState(auth);
   const [cartItems, setCartItems] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
-
-  useEffect(() => {
-    // Load cart items from localStorage on component mount
-    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCartItems(savedCart);
-    updateCartSummary(savedCart);
-  }, []);
-
-  const updateCartSummary = (cart) => {
-    // Calculate total items and total price
-    let total = 0;
-    let price = 0;
-    cart.forEach((item) => {
-      total += item.quantity;
-      price += item.price * item.quantity;
-    });
-    setTotalItems(total);
-    setTotalPrice(price);
-  };
+  const router = useRouter();
 
   const handleIncrement = (index) => {
     const updatedCart = [...cartItems];
@@ -47,68 +33,141 @@ function page() {
     }
   };
 
-  const handleRemove = (index) => {
-    const updatedCart = cartItems.filter((_, i) => i !== index);
-    setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    updateCartSummary(updatedCart);
-  };
+  useEffect(() => {
+    let unsubscribe;
 
-  const handleCheckout = async () => {
-    const options = {
-      key: "rzp_test_DwNfgfRaelZuOF", // Replace with your Razorpay key
-      amount: totalPrice * 100, // Razorpay expects amount in paise
-      currency: "INR",
-      name: "Your Company Name",
-      description: "Purchase Description",
-      handler: async function (response) {
-        try {
-          // Add order to Firebase
-          const docRef = await addDoc(collection(db, "orders"), {
-            orderId: response.razorpay_payment_id,
-            amount: totalPrice,
-            items: cartItems,
-            timestamp: new Date(),
-          });
-
-          Swal.fire({
-            icon: "success",
-            title: "Payment Successful!",
-            text: "Your order has been placed.",
-          });
-
-          // Clear cart after successful checkout
-          setCartItems([]);
-          setTotalItems(0);
-          setTotalPrice(0);
-          localStorage.removeItem("cart");
-        } catch (error) {
-          console.error("Error adding document: ", error);
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Something went wrong!",
-          });
-        }
-      },
-      prefill: {
-        name: "Meghana",
-        email: "customer@example.com",
-        contact: "8140628151"
-      },
-      theme: {
-        color: "#3399cc"
+    const setupCartListener = async () => {
+      if (user) {
+        const userRef = doc(db, "carts", user.uid);
+        unsubscribe = onSnapshot(userRef, (doc) => {
+          if (doc.exists()) {
+            const cart = doc.data().items || [];
+            setCartItems(cart);
+            updateCartSummary(cart);
+          } else {
+            setCartItems([]);
+            updateCartSummary([]);
+          }
+        }, (error) => {
+          console.error("Error fetching cart from Firestore:", error);
+        });
       }
     };
 
-    const rzp1 = new window.Razorpay(options);
-    rzp1.open();
+    if (!loading) {
+      setupCartListener();
+    }
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [user, loading]);
+
+  const updateCartSummary = (cart) => {
+    let total = 0;
+    let price = 0;
+    cart.forEach((item) => {
+      total += item.quantity;
+      price += item.price * item.quantity;
+    });
+    setTotalItems(total);
+    setTotalPrice(price);
   };
+
+  const updateQuantity = async (index, newQuantity) => {
+    if (newQuantity < 1) return;
+
+    const updatedCart = [...cartItems];
+    updatedCart[index].quantity = newQuantity;
+
+    try {
+      const userRef = doc(db, "carts", user.uid);
+      await updateDoc(userRef, { items: updatedCart });
+    } catch (error) {
+      console.error("Error updating cart in Firestore:", error);
+    }
+  };
+
+  const handleRemove = async (index) => {
+    console.log("remove");
+    const itemToRemove = cartItems[index];
+    try {
+      const userRef = doc(db, "carts", user.uid);
+      await updateDoc(userRef, {
+        items: arrayRemove(itemToRemove),
+      });
+    } catch (error) {
+      console.error("Error removing item from cart in Firestore:", error);
+    }
+  };
+
+  const handleCheckout = () => {
+    const queryParams = new URLSearchParams({
+      totalItems: totalItems.toString(),
+      totalPrice: totalPrice.toString(),
+      // You can calculate the discount here if needed
+      totalDiscount: "0" // Replace with actual discount calculation
+    }).toString();
+
+    router.push(`/checkoutFrom?${queryParams}`);
+  };
+  // const handleCheckout = async () => {
+  //   const options = {
+  //     key: "rzp_test_DwNfgfRaelZuOF", // Replace with your Razorpay key
+  //     amount: totalPrice * 100, // Razorpay expects amount in paise
+  //     currency: "INR",
+  //     name: "Your Company Name",
+  //     description: "Purchase Description",
+  //     handler: async function (response) {
+  //       try {
+  //         // Add order to Firebase
+  //         const docRef = await addDoc(collection(db, "orders"), {
+  //           orderId: response.razorpay_payment_id,
+  //           amount: totalPrice,
+  //           items: cartItems,
+  //           timestamp: new Date(),
+  //         }); e
+
+  //         Swal.fire({
+  //           icon: "success",
+  //           title: "Payment Successful!",
+  //           text: "Your order has been placed.",
+  //         });
+
+  //         // Clear cart after successful checkout
+  //         setCartItems([]);
+  //         setTotalItems(0);
+  //         setTotalPrice(0);
+  //         localStorage.removeItem("cart");
+  //       } catch (error) {
+  //         console.error("Error adding document: ", error);
+  //         Swal.fire({
+  //           icon: "error",
+  //           title: "Oops...",
+  //           text: "Something went wrong!",
+  //         });
+  //       }
+  //     },
+  //     prefill: {
+  //       name: "Meghana",
+  //       email: "customer@example.com",
+  //       contact: "8140628151",
+  //     },
+  //     theme: {
+  //       color: "#3399cc",
+  //     },
+  //   };
+
+  //   const rzp1 = new window.Razorpay(options);
+  //   rzp1.open();
+  // };
 
   useEffect(() => {
     // Load Razorpay script
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.async = true;
     document.body.appendChild(script);
 
@@ -118,7 +177,13 @@ function page() {
       document.body.removeChild(script);
     };
   }, []);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
+  if (!user) {
+    return <div>Please log in to view your cart.</div>;
+  }
   return (
     <section className="pt-28 font-main">
       <div className="flex flex-col lg:flex-row justify-around">
@@ -137,7 +202,7 @@ function page() {
                     height={200}
                     width={200}
                     alt={item.name}
-                    className="rounded-md border-2 max-sm:border-0"
+                    className="rounded-md border-2 h-[200px] max-sm:border-0"
                   />
                 </div>
                 <div className="w-full sm:w-2/3 space-y-3 px-4 sm:px-8">
@@ -207,6 +272,7 @@ function page() {
               </div>
               <button
                 onClick={handleCheckout}
+                // onClick={() => router.push("/checkoutFrom")}
                 className="bg-gray-950 hover:bg-gray-900 text-white px-5 py-2 rounded-md w-full"
               >
                 Checkout

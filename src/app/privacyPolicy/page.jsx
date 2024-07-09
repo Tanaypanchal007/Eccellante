@@ -1,13 +1,17 @@
-import Link from "next/link";
+"use client";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { MdKeyboardArrowRight } from "react-icons/md";
 
 function privacyPolicy() {
+  const router = useRouter();
   return (
     <>
       <section>
         <div className="pt-28 flex items-center justify-center font-main bg-100 py-7 text-950 font-semibold text-xl">
-          <Link href="/">Home</Link>
+          <p onClick={() => router.push("/")} className="cursor-pointer">
+            Home
+          </p>
           <MdKeyboardArrowRight />
           <p> Privacy Policy</p>
         </div>

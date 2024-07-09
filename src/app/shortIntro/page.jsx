@@ -1,12 +1,14 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { HiOutlineArrowRight } from "react-icons/hi";
 import Aos from "aos";
 import "aos/dist/aos.css";
 
 const ShortIntro = (props) => {
+  const router = useRouter();
+
   useEffect(() => {
     Aos.init({
       offset: 400,
@@ -26,12 +28,15 @@ const ShortIntro = (props) => {
             Offers you a range of oversized T-shirts with fashionable and unique
             designs of the greatest quality.
           </p>
-          <Link href="/products" className="unique-btn ">
+          <div
+            onClick={() => router.push("/products")}
+            className="unique-btn cursor-pointer"
+          >
             <p className=" text-xl flex items-center mt-7.5 border-2 border-950 bg-gray-900 text-white w-[210px]   px-3 py-3 rounded hover:bg-transparent  hover:text-950 transition-all duration-300">
               Start Shopping
               <HiOutlineArrowRight className="animation-btn ml-1.5 mt-1 hover:text-950 " />
             </p>
-          </Link>
+          </div>
         </div>
         <div className="flex items-center gap-5 ">
           <div
