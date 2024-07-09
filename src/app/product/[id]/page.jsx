@@ -5,13 +5,13 @@ import { useState, useEffect } from "react";
 import { FaRegHeart } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 
-import { doc, getDoc } from "firebase/firestore";
+// import { doc } from "firebase/firestore";
 import Image from "next/image";
 import { auth, db } from "../../firebaseConfig";
 import Swal from "sweetalert2";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { FaHeart } from "react-icons/fa6";
-
+import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -47,71 +47,80 @@ const ProductDetail = () => {
     }
   }, [id]);
 
-  useEffect(() => {
+useEffect(() => {
+  const fetchWishlist = async () => {
     if (product && product.id && user) {
-    console.log("id",product.id);
-
       try {
-        const wishlist = JSON.parse(localStorage.getItem("wishlistItems")) || [];
-        const isProductWishlisted = wishlist.some(
-          (item) => item.id === product.id
-        );
-        setIsWishlisted(isProductWishlisted);
-      } catch (error) {
-        console.error("Error reading from localStorage:", error);
-      }
-    }
-  }, [product, user]);
-
-  const handleWishlist = (e) => {
-    e.stopPropagation();
-    if (!user) {
-      Swal.fire({
-        title: "Please log in",
-        text: "You need to be logged in to add items to your wishlist.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Login",
-        cancelButtonText: "Cancel",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          router.push("/sign-in");
+        const userRef = doc(db, "wishlists", user.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          const wishlist = userSnap.data().items || [];
+          const isProductWishlisted = wishlist.some((item) => item.id === product.id);
+          setIsWishlisted(isProductWishlisted);
         }
-      });
-      return;
-    }
-
-    if (!product || !product.id) {
-      return;
-    }
-
-    try {
-      let wishlist = JSON.parse(localStorage.getItem("wishlistItems")) || [];
-
-      if (isWishlisted) {
-        wishlist = wishlist.filter((item) => item.id !== product.id);
-        setIsWishlisted(false);
-        Swal.fire({
-          icon: "success",
-          title: "Removed from Wishlist",
-          text: "Item has been removed from your wishlist.",
-        });
-      } else {
-        wishlist.push(product);
-        setIsWishlisted(true);
-        Swal.fire({
-          icon: "success",
-          title: "Added to Wishlist",
-          text: "Item has been added to your wishlist.",
-        });
+      } catch (error) {
+        console.error("Error fetching wishlist from Firestore:", error);
       }
-
-      localStorage.setItem("wishlistItems", JSON.stringify(wishlist));
-      window.dispatchEvent(new Event("wishlistUpdated"));
-    } catch (error) {
-      console.error("Error updating localStorage:", error);
     }
   };
+  fetchWishlist();
+}, [product, user]);
+
+const handleWishlist = async (e) => {
+  e.stopPropagation();
+  if (!user) {
+    Swal.fire({
+      title: "Please log in",
+      text: "You need to be logged in to add items to your wishlist.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Login",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        router.push("/sign-in");
+      }
+    });
+    return;
+  }
+
+  if (!product || !product.id) {
+    return;
+  }
+
+  try {
+    const userRef = doc(db, "wishlists", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      await setDoc(userRef, { items: [] });
+    }
+
+    if (isWishlisted) {
+      await updateDoc(userRef, {
+        items: arrayRemove(product),
+      });
+      setIsWishlisted(false);
+      Swal.fire({
+        icon: "success",
+        title: "Removed from Wishlist",
+        text: "Item has been removed from your wishlist.",
+      });
+    } else {
+      await updateDoc(userRef, {
+        items: arrayUnion(product),
+      });
+      setIsWishlisted(true);
+      Swal.fire({
+        icon: "success",
+        title: "Added to Wishlist",
+        text: "Item has been added to your wishlist.",
+      });
+    }
+  } catch (error) {
+    console.error("Error updating Firestore:", error);
+  }
+};
 
 
   const countHandleIncrement = () => {
@@ -130,9 +139,8 @@ const ProductDetail = () => {
       }, 3000);
     }
   };
-
-  const handleAddToCart = (e) => {
-    e.stopPropagation();
+  const handleAddToCart = async (e) => {
+    e.preventDefault(); // Use preventDefault instead of stopPropagation
     if (!user) {
       Swal.fire({
         title: "Please log in",
@@ -148,29 +156,46 @@ const ProductDetail = () => {
       });
       return;
     }
-
+  
     if (!product || !product.id) {
+      console.error("Product is undefined or missing ID");
       return;
     }
-
+  
     try {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-      const existingItem = cart.find((item) => item.id === product.id);
-      if (existingItem) {
-        existingItem.quantity += 1;
-      } else {
-        cart.push({ ...product, quantity: 1 });
+      const userRef = doc(db, "carts", user.uid);
+      const userSnap = await getDoc(userRef);
+  
+      let cartItems = [];
+      if (userSnap.exists()) {
+        cartItems = userSnap.data().items || [];
       }
-
-      localStorage.setItem("cart", JSON.stringify(cart));
+  
+      const existingItemIndex = cartItems.findIndex(item => item.id === product.id);
+  
+      if (existingItemIndex !== -1) {
+        cartItems[existingItemIndex].quantity += count || 1;
+      } else {
+        cartItems.push({ ...product, quantity: count || 1 });
+      }
+  
+      await setDoc(userRef, { items: cartItems }, { merge: true });
+  
       Swal.fire({
         icon: "success",
         title: "Added to Cart",
         text: "Item has been added to your cart.",
       });
+  
+      // Reset count after adding to cart
+      setCount(0);
     } catch (error) {
-      console.error("Error updating localStorage:", error);
+      console.error("Error updating Firestore:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "There was an error adding the item to your cart. Please try again.",
+      });
     }
   };
 

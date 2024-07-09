@@ -19,7 +19,7 @@ export default function Product() {
   const [open, setOpen] = useState(false); // Fixed the state variable name here
 
   const handleFilterMenu = () => {
-    setOpen(!open); // Fixed the function name here
+    setOpen(!open); 
   };
 
   useEffect(() => {

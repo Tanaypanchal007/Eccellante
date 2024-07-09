@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../firebaseConfig";
+import { auth, db } from "../../firebaseConfig";
 import { IoSearchOutline, IoBagHandleOutline, IoHeart } from "react-icons/io5";
 import { FiShoppingCart, FiUser } from "react-icons/fi";
 import { FaRegHeart } from "react-icons/fa6";
@@ -13,7 +13,7 @@ import { VscInfo } from "react-icons/vsc";
 import { IoShirtOutline, IoLogInOutline } from "react-icons/io5";
 import { GoHome } from "react-icons/go";
 import Swal from "sweetalert2";
-
+import { doc, onSnapshot } from "firebase/firestore";
 // Dynamically import the Navbar to ensure it is only rendered on the client side
 const DynamicNavbar = dynamic(() => import("./Navbar"), { ssr: false });
 
@@ -24,21 +24,34 @@ function Navbar() {
   const [wishlistCount, setWishlistCount] = useState(0);
 
   useEffect(() => {
-    const updateWishlistCount = () => {
-      const wishlist = JSON.parse(localStorage.getItem("wishlistItems")) || [];
-      setWishlistCount(wishlist.length);
+    let unsubscribe;
+
+    const setupWishlistListener = async () => {
+      if (user) {
+        const userRef = doc(db, "wishlists", user.uid);
+        unsubscribe = onSnapshot(userRef, (doc) => {
+          if (doc.exists()) {
+            const wishlistItems = doc.data().items || [];
+            setWishlistCount(wishlistItems.length);
+          } else {
+            setWishlistCount(0);
+          }
+        }, (error) => {
+          console.error("Error fetching wishlist from Firestore:", error);
+        });
+      }
     };
 
-    updateWishlistCount();
-
-    window.addEventListener("storage", updateWishlistCount);
-    window.addEventListener("wishlistUpdated", updateWishlistCount);
+    if (!loading) {
+      setupWishlistListener();
+    }
 
     return () => {
-      window.removeEventListener("storage", updateWishlistCount);
-      window.removeEventListener("wishlistUpdated", updateWishlistCount);
+      if (unsubscribe) {
+        unsubscribe();
+      }
     };
-  }, []);
+  }, [user, loading]);
 
   const handleLogout = async () => {
     try {
@@ -121,16 +134,16 @@ function Navbar() {
           {user ? (
             <>
               <p onClick={() => router.push("/wishlist")} className="relative">
-                {wishlistCount > 0 ? (
-                  <>
-                    <IoHeart className="cursor-pointer" />
-                    <span className="absolute top-[-5px] right-[-5px] text-sm text-white bg-red-600 rounded-full w-[20px] h-[20px] flex justify-center items-center">
-                      {wishlistCount}
-                    </span>
-                  </>
-                ) : (
-                  <FaRegHeart className="cursor-pointer" />
-                )}
+              {wishlistCount > 0 ? (
+                <>
+                  <IoHeart className="cursor-pointer" />
+                  <span className="absolute top-[-5px] right-[-5px] text-sm text-white bg-red-600 rounded-full w-[20px] h-[20px] flex justify-center items-center">
+                    {wishlistCount}
+                  </span>
+                </>
+              ) : (
+                <FaRegHeart className="cursor-pointer" />
+              )}
               </p>
               <p onClick={() => router.push("/cart")}>
                 <FiShoppingCart
