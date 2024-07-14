@@ -97,13 +97,13 @@ export default function Footer() {
             <div className="space-y-5">
               <div className="flex gap-2 items-center ">
                 <CiMail />
-                <Link href="mailto:contact.eccelante@gmail.com">
-                  contact.eccelante@gmail.com
+                <Link href="mailto:contact.eccellante@gmail.com">
+                  contact.eccellante@gmail.com
                 </Link>
               </div>
               <div className="flex gap-2 items-center">
                 <IoCallOutline />
-                <Link href="tel:+919638316376">+91 9638316376</Link>
+                <Link href="tel:+919998172722">+91 99981 72722</Link>
               </div>
             </div>
 

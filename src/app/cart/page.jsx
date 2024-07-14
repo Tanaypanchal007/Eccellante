@@ -5,10 +5,10 @@ import Swal from "sweetalert2";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebaseConfig";
-import { doc, onSnapshot,updateDoc, arrayRemove } from "firebase/firestore";
+import { doc, onSnapshot, updateDoc, arrayRemove } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 const Sizes = ["S", "M", "L", "XL", "XXL"];
-function page() {
+const carts = () => {
   const [user, loading] = useAuthState(auth);
   const [cartItems, setCartItems] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
@@ -209,14 +209,11 @@ function page() {
                   <p className="text-2xl font-bold">{item.name}</p>
                   <p>{item.description}</p>
                   <div className="flex gap-2 flex-wrap">
-                    {Sizes.map((size, index) => (
-                      <p
-                        key={index}
-                        className="h-9 w-20 border-2 flex items-center justify-center rounded cursor-pointer hover:bg-950 hover:text-white transition-all duration-2000"
-                      >
-                        {size}
+                    {item.selectedSize && (
+                      <p className="h-9 w-20 border-2 flex items-center justify-center rounded">
+                        Size: {item.selectedSize}
                       </p>
-                    ))}
+                    )}
                   </div>
                   <div className="flex justify-between items-center">
                     <div className="flex gap-2 items-center">
@@ -285,4 +282,4 @@ function page() {
   );
 }
 
-export default page;
+export default carts;

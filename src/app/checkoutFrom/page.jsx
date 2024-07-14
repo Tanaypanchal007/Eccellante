@@ -6,7 +6,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Swal from "sweetalert2";
 // import { auth, db } from "../firebaseConfig";
-import {query, where, getDocs, deleteDoc } from "firebase/firestore";
+import { query, where, getDocs, deleteDoc } from "firebase/firestore";
 const ChekoutForm = () => {
   const [user] = useAuthState(auth);
   // const [currentDate, setCurrentDate] = useState("");
@@ -31,30 +31,32 @@ const ChekoutForm = () => {
     setTotalDiscount(Number(searchParams.get("totalDiscount") || 0));
   }, [searchParams]);
 
- // Add the new useEffect here, right after the existing one
- useEffect(() => {
-  const loadRazorpay = () => {
-    return new Promise((resolve) => {
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-      script.async = true;
-      script.onload = () => {
-        console.log('Razorpay SDK loaded successfully');
-        resolve(true);
-      };
-      script.onerror = () => {
-        console.error('Failed to load Razorpay SDK');
-        resolve(false);
-      };
-      document.body.appendChild(script);
+  // Add the new useEffect here, right after the existing one
+  useEffect(() => {
+    const loadRazorpay = () => {
+      return new Promise((resolve) => {
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.async = true;
+        script.onload = () => {
+          console.log("Razorpay SDK loaded successfully");
+          resolve(true);
+        };
+        script.onerror = () => {
+          console.error("Failed to load Razorpay SDK");
+          resolve(false);
+        };
+        document.body.appendChild(script);
+      });
+    };
+    loadRazorpay().then((success) => {
+      if (!success) {
+        console.error(
+          "Razorpay SDK failed to load. Payment functionality may not work."
+        );
+      }
     });
-  };
-  loadRazorpay().then((success) => {
-    if (!success) {
-      console.error('Razorpay SDK failed to load. Payment functionality may not work.');
-    }
-  });
-}, []);
+  }, []);
   // const handleProocedTOPay = async () => {
   //   const options = {
   //     key: "rzp_test_DwNfgfRaelZuOF", // Replace with your Razorpay key
@@ -105,11 +107,9 @@ const ChekoutForm = () => {
   //   const rzp1 = new window.Razorpay(options);
   //   rzp1.open();
   // };
-
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setUserInfo(prev => ({ ...prev, [name]: value }));
+    setUserInfo((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleProocedToPay = async (e) => {
@@ -123,8 +123,8 @@ const ChekoutForm = () => {
       return;
     }
 
-    if (typeof window.Razorpay === 'undefined') {
-      console.error('Razorpay SDK is not loaded');
+    if (typeof window.Razorpay === "undefined") {
+      console.error("Razorpay SDK is not loaded");
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -137,7 +137,7 @@ const ChekoutForm = () => {
       key: "rzp_test_DwNfgfRaelZuOF", // Replace with your Razorpay key
       amount: totalPrice * 100, // Razorpay expects amount in paise
       currency: "INR",
-      name: "Your Company Name",
+      name: "Eccelante",
       description: "Purchase Description",
       handler: async function (response) {
         try {
@@ -157,12 +157,15 @@ const ChekoutForm = () => {
           await addDoc(collection(db, "orders"), orderData);
 
           // Clear cart data from Firebase
-          const cartRef = collection(db, "carts");
-          const q = query(cartRef, where("userId", "==", user.uid));
-          const querySnapshot = await getDocs(q);
+          // const cartRef = collection(db, "carts");
+          // const q = query(cartRef, where("userId", "==", user.uid));
+          // const querySnapshot = await getDocs(q);
 
-          const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
-          await Promise.all(deletePromises);
+          const cartRef = doc(db, "carts", user.uid);
+          await updateDoc(cartRef, { items: [] });
+
+          // const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
+          // await Promise.all(deletePromises);
           setUserInfo({
             name: "",
             email: "",
@@ -174,13 +177,14 @@ const ChekoutForm = () => {
           setTotalItems(0);
           setTotalPrice(0);
           setTotalDiscount(0);
-          setCurrentDate("");
+          // setCurrentDate("");
           Swal.fire({
             icon: "success",
             title: "Payment Successful!",
             text: "Your order has been placed.",
           });
-
+          console.log("Payment successful, clearing cart");
+          console.log("Cart items updated:", cart);
           // Clear cart after successful checkout
           // You might want to implement this functionality
           // clearCart();
@@ -207,12 +211,13 @@ const ChekoutForm = () => {
       const rzp1 = new window.Razorpay(options);
       rzp1.open();
     } catch (error) {
-      console.error('Error initializing Razorpay:', error);
+      console.error("Error initializing Razorpay:", error);
       Swal.fire({
         icon: "error",
         title: "Payment Gateway Error",
         text: "There was an error setting up the payment. Please try again or contact support.",
-      });}
+      });
+    }
   };
 
   return (
@@ -230,7 +235,7 @@ const ChekoutForm = () => {
                     Name
                   </label>
                   <input
-                   type="text"
+                    type="text"
                     name="name"
                     value={userInfo.name}
                     onChange={handleInputChange}
@@ -258,7 +263,7 @@ const ChekoutForm = () => {
                     Full Address
                   </label>
                   <input
-                      type="text"
+                    type="text"
                     name="address"
                     value={userInfo.address}
                     onChange={handleInputChange}
@@ -272,7 +277,7 @@ const ChekoutForm = () => {
                     Contact Number
                   </label>
                   <input
-                   type="number"
+                    type="number"
                     name="contactNumber"
                     value={userInfo.contactNumber}
                     onChange={handleInputChange}

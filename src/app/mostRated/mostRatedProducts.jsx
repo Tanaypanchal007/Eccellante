@@ -2,9 +2,11 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import Aos from "aos";
+import { useRouter } from "next/navigation";
 import "aos/dist/aos.css";
 
 const MostRatedProducts = ({ product }) => {
+  const router = useRouter();
   useEffect(() => {
     Aos.init();
   }, []);
@@ -14,7 +16,14 @@ const MostRatedProducts = ({ product }) => {
       data-aos-anchor-placement="bottom-bottom"
     >
       <div>
-        <div className="relative max-sm:w-fit">
+        <div
+          className="relative max-sm:w-fit"
+          onClick={() => {
+            if (product && product.id) {
+              router.push(`/product/${product.id}`);
+            }
+          }}
+        >
           {product.image && (
             <div className="w-full h-[480px] max-sm:h-[200px] overflow-hidden rounded-t-md">
               <Image
@@ -37,7 +46,9 @@ const MostRatedProducts = ({ product }) => {
             <h2 className="text-md font-bold max-sm:text-[13px]">
               {product.name}
             </h2>
-            <p className="max-sm:text-[10px]">{product.description}</p>
+            <p className="text-sm max-sm:text-[10px] text-gray-600 line-clamp-2 h-10">
+              {product && product.description}
+            </p>{" "}
           </div>
           {/* <div className="flex items-start gap-1">
           <FaStar className="text-xl mt-1" />
