@@ -4,9 +4,11 @@ import { useSearchParams } from "next/navigation";
 import { auth, db } from "../firebaseConfig"; // Make sure to import your Firebase config
 import { collection, addDoc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { getStorage } from "firebase/storage";
 import Swal from "sweetalert2";
 // import { auth, db } from "../firebaseConfig";
-import { query, where, getDocs, deleteDoc } from "firebase/firestore";
+import { where, getDocs, deleteDoc } from "firebase/firestore";
+import { doc, updateDoc, query, } from "firebase/firestore";
 const ChekoutForm = () => {
   const [user] = useAuthState(auth);
   // const [currentDate, setCurrentDate] = useState("");
@@ -14,6 +16,7 @@ const ChekoutForm = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
+  const [cartItems, setCartItems] = useState([]);
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
@@ -26,11 +29,29 @@ const ChekoutForm = () => {
     const date = new Date();
     const formattedDateTime = date.toISOString().slice(0, 10);
     setCurrentDate(formattedDateTime);
+    const cartItemsParam = searchParams.get("cartItems");
+    if (cartItemsParam) {
+      setCartItems(JSON.parse(cartItemsParam));
+    }
     setTotalItems(Number(searchParams.get("totalItems") || 0));
     setTotalPrice(Number(searchParams.get("totalPrice") || 0));
     setTotalDiscount(Number(searchParams.get("totalDiscount") || 0));
   }, [searchParams]);
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      if (user) {
+        const cartRef = collection(db, "carts");
+        const q = query(cartRef, where("userId", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const cartDoc = querySnapshot.docs[0];
+          setCartItems(cartDoc.data().items || []);
+        }
+      }
+    };
 
+    fetchCartItems();
+  }, [user]);
   // Add the new useEffect here, right after the existing one
   useEffect(() => {
     const loadRazorpay = () => {
@@ -55,57 +76,6 @@ const ChekoutForm = () => {
       }
     });
   }, []);
-  // const handleProocedTOPay = async () => {
-  //   const options = {
-  //     key: "rzp_test_DwNfgfRaelZuOF", // Replace with your Razorpay key
-  //     amount: totalPrice * 100, // Razorpay expects amount in paise
-  //     currency: "INR",
-  //     name: "Your Company Name",
-  //     description: "Purchase Description",
-  //     handler: async function (response) {
-  //       try {
-  //         // Add order to Firebase
-  //         const docRef = await addDoc(collection(db, "orders"), {
-  //           orderId: response.razorpay_payment_id,
-  //           amount: totalPrice,
-  //           items: cartItems,
-  //           timestamp: new Date(),
-  //         }); e
-
-  //         Swal.fire({
-  //           icon: "success",
-  //           title: "Payment Successful!",
-  //           text: "Your order has been placed.",
-  //         });
-
-  //         // Clear cart after successful checkout
-  //         setCartItems([]);
-  //         setTotalItems(0);
-  //         setTotalPrice(0);
-  //         localStorage.removeItem("cart");
-  //       } catch (error) {
-  //         console.error("Error adding document: ", error);
-  //         Swal.fire({
-  //           icon: "error",
-  //           title: "Oops...",
-  //           text: "Something went wrong!",
-  //         });
-  //       }
-  //     },
-  //     prefill: {
-  //       name: "Meghana",
-  //       email: "customer@example.com",
-  //       contact: "8140628151",
-  //     },
-  //     theme: {
-  //       color: "#3399cc",
-  //     },
-  //   };
-
-  //   const rzp1 = new window.Razorpay(options);
-  //   rzp1.open();
-  // };
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -122,6 +92,14 @@ const ChekoutForm = () => {
       });
       return;
     }
+    if (cartItems.length === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Empty Cart",
+        text: "Your cart is empty. Please add items before proceeding to payment.",
+      });
+      return;
+    }
 
     if (typeof window.Razorpay === 'undefined') {
       console.error('Razorpay SDK is not loaded');
@@ -129,6 +107,35 @@ const ChekoutForm = () => {
         icon: "error",
         title: "Oops...",
         text: "Payment gateway is not available. Please try again later.",
+      });
+      return;
+    }
+
+    console.log("Current cartItems in state:", cartItems);
+
+    // Fetch cart items before proceeding
+    const cartRef = collection(db, "carts");
+    const q = query(cartRef, where("userId", "==", user.uid));
+    const querySnapshot = await getDocs(q);
+    let fetchedCartItems = [];
+    if (!querySnapshot.empty) {
+      const cartDoc = querySnapshot.docs[0];
+      fetchedCartItems = cartDoc.data().items || [];
+    } else {
+      console.log("No matching cart document found for user:", user.uid);
+    }
+    console.log("Fetched cart items from Firestore:", fetchedCartItems);
+
+    if (fetchedCartItems.length === 0) {
+      console.log("Using cartItems from state instead of Firestore");
+      fetchedCartItems = cartItems;
+    }
+
+    if (fetchedCartItems.length === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Empty Cart",
+        text: "Your cart is empty. Please add items before proceeding to payment.",
       });
       return;
     }
@@ -141,31 +148,34 @@ const ChekoutForm = () => {
       description: "Purchase Description",
       handler: async function (response) {
         try {
+          // Prepare order items
+          // const orderItems = cartItems.map(item => ({
+          //   productId: item.id,
+          //   name: item.name,
+          //   price: item.price,
+          //   quantity: item.quantity,
+          //   imageUrl: item.image, // Make sure this property exists in your cart items
+          // }));
+
           // Add order to Firebase
           const orderData = {
             userId: user.uid,
             orderId: response.razorpay_payment_id,
             amount: totalPrice,
-            items: totalItems,
+            items: fetchedCartItems,
             discount: totalDiscount,
             userInfo: userInfo,
             orderDate: currentDate,
             timestamp: new Date(),
           };
 
-          // const docRef = await addDoc(collection(db, "orders"), orderData);
+
           await addDoc(collection(db, "orders"), orderData);
 
           // Clear cart data from Firebase
-          // const cartRef = collection(db, "carts");
-          // const q = query(cartRef, where("userId", "==", user.uid));
-          // const querySnapshot = await getDocs(q);
-
           const cartRef = doc(db, "carts", user.uid);
           await updateDoc(cartRef, { items: [] });
 
-          // const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
-          // await Promise.all(deletePromises);
           setUserInfo({
             name: "",
             email: "",
@@ -177,17 +187,13 @@ const ChekoutForm = () => {
           setTotalItems(0);
           setTotalPrice(0);
           setTotalDiscount(0);
-          // setCurrentDate("");
+
           Swal.fire({
             icon: "success",
             title: "Payment Successful!",
             text: "Your order has been placed.",
           });
           console.log("Payment successful, clearing cart");
-          console.log("Cart items updated:", cart);
-          // Clear cart after successful checkout
-          // You might want to implement this functionality
-          // clearCart();
         } catch (error) {
           console.error("Error adding document: ", error);
           Swal.fire({
@@ -310,10 +316,12 @@ const ChekoutForm = () => {
                   Order Summary
                 </h1>
                 <div className="p-4 max-lg:p-7">
-                  <div className="flex justify-between mb-2">
-                    <p>Total Item</p>
-                    <p>{totalItems}</p>
-                  </div>
+                  {cartItems.map((item, index) => (
+                    <div key={index} className="flex justify-between mb-2">
+                      <p>{item.name} (x{item.quantity})</p>
+                      <p>₹{item.price * item.quantity}</p>
+                    </div>
+                  ))}
                   <div className="flex justify-between">
                     <p>Total Discount</p>
                     <p>₹{totalDiscount}</p>

@@ -105,6 +105,7 @@ const carts = () => {
 
   const handleCheckout = () => {
     const queryParams = new URLSearchParams({
+      cartItems: JSON.stringify(cartItems),
       totalItems: totalItems.toString(),
       totalPrice: totalPrice.toString(),
       // You can calculate the discount here if needed

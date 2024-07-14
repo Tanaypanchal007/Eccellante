@@ -210,9 +210,9 @@ function Dashboard() {
       {/* Product form */}
       <div className="sticky top-[82px] bg-white py-4 z-50 border-b-[1px]">
         <div className="flex justify-center items-center gap-1 text-xl font-semibold ">
-          <Link href="">Dashboard</Link>
+          <Link href="/Dashboard">Dashboard</Link>
           <FaAngleRight />
-          <Link href="">Order List</Link>
+          <Link href="/Orders">Order List</Link>
         </div>
       </div>
       <section className="flex gap-10">
