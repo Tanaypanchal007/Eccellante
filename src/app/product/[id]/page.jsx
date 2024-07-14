@@ -21,6 +21,7 @@ const ProductDetail = () => {
   const [countError, setCountError] = useState("");
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [user] = useAuthState(auth);
+  const [selectedSize, setSelectedSize] = useState("");
 
   useEffect(() => {
     if (id) {
@@ -47,80 +48,80 @@ const ProductDetail = () => {
     }
   }, [id]);
 
-useEffect(() => {
-  const fetchWishlist = async () => {
-    if (product && product.id && user) {
-      try {
-        const userRef = doc(db, "wishlists", user.uid);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          const wishlist = userSnap.data().items || [];
-          const isProductWishlisted = wishlist.some((item) => item.id === product.id);
-          setIsWishlisted(isProductWishlisted);
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      if (product && product.id && user) {
+        try {
+          const userRef = doc(db, "wishlists", user.uid);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            const wishlist = userSnap.data().items || [];
+            const isProductWishlisted = wishlist.some((item) => item.id === product.id);
+            setIsWishlisted(isProductWishlisted);
+          }
+        } catch (error) {
+          console.error("Error fetching wishlist from Firestore:", error);
         }
-      } catch (error) {
-        console.error("Error fetching wishlist from Firestore:", error);
       }
+    };
+    fetchWishlist();
+  }, [product, user]);
+
+  const handleWishlist = async (e) => {
+    e.stopPropagation();
+    if (!user) {
+      Swal.fire({
+        title: "Please log in",
+        text: "You need to be logged in to add items to your wishlist.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Login",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push("/sign-in");
+        }
+      });
+      return;
+    }
+
+    if (!product || !product.id) {
+      return;
+    }
+
+    try {
+      const userRef = doc(db, "wishlists", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, { items: [] });
+      }
+
+      if (isWishlisted) {
+        await updateDoc(userRef, {
+          items: arrayRemove(product),
+        });
+        setIsWishlisted(false);
+        Swal.fire({
+          icon: "success",
+          title: "Removed from Wishlist",
+          text: "Item has been removed from your wishlist.",
+        });
+      } else {
+        await updateDoc(userRef, {
+          items: arrayUnion(product),
+        });
+        setIsWishlisted(true);
+        Swal.fire({
+          icon: "success",
+          title: "Added to Wishlist",
+          text: "Item has been added to your wishlist.",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating Firestore:", error);
     }
   };
-  fetchWishlist();
-}, [product, user]);
-
-const handleWishlist = async (e) => {
-  e.stopPropagation();
-  if (!user) {
-    Swal.fire({
-      title: "Please log in",
-      text: "You need to be logged in to add items to your wishlist.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Login",
-      cancelButtonText: "Cancel",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        router.push("/sign-in");
-      }
-    });
-    return;
-  }
-
-  if (!product || !product.id) {
-    return;
-  }
-
-  try {
-    const userRef = doc(db, "wishlists", user.uid);
-    const userSnap = await getDoc(userRef);
-
-    if (!userSnap.exists()) {
-      await setDoc(userRef, { items: [] });
-    }
-
-    if (isWishlisted) {
-      await updateDoc(userRef, {
-        items: arrayRemove(product),
-      });
-      setIsWishlisted(false);
-      Swal.fire({
-        icon: "success",
-        title: "Removed from Wishlist",
-        text: "Item has been removed from your wishlist.",
-      });
-    } else {
-      await updateDoc(userRef, {
-        items: arrayUnion(product),
-      });
-      setIsWishlisted(true);
-      Swal.fire({
-        icon: "success",
-        title: "Added to Wishlist",
-        text: "Item has been added to your wishlist.",
-      });
-    }
-  } catch (error) {
-    console.error("Error updating Firestore:", error);
-  }
-};
 
 
   const countHandleIncrement = () => {
@@ -139,6 +140,11 @@ const handleWishlist = async (e) => {
       }, 3000);
     }
   };
+
+  const handleSizeSelect = (size) => {
+    setSelectedSize(size);
+  };
+
   const handleAddToCart = async (e) => {
     e.preventDefault(); // Use preventDefault instead of stopPropagation
     if (!user) {
@@ -156,39 +162,49 @@ const handleWishlist = async (e) => {
       });
       return;
     }
-  
+    if (!selectedSize) {
+      Swal.fire({
+        title: "Select Size",
+        text: "Please select a size before adding to cart.",
+        icon: "warning",
+      });
+      return;
+    }
     if (!product || !product.id) {
       console.error("Product is undefined or missing ID");
       return;
     }
-  
+
     try {
       const userRef = doc(db, "carts", user.uid);
       const userSnap = await getDoc(userRef);
-  
+
       let cartItems = [];
       if (userSnap.exists()) {
         cartItems = userSnap.data().items || [];
       }
-  
-      const existingItemIndex = cartItems.findIndex(item => item.id === product.id);
-  
+
+      const existingItemIndex = cartItems.findIndex(item => item.id === product.id && item.selectedSize === selectedSize);
+
+
       if (existingItemIndex !== -1) {
         cartItems[existingItemIndex].quantity += count || 1;
       } else {
-        cartItems.push({ ...product, quantity: count || 1 });
+        const { sizes, ...productWithoutSizes } = product;
+        cartItems.push({ ...productWithoutSizes, quantity: count || 1, selectedSize });
       }
-  
+
       await setDoc(userRef, { items: cartItems }, { merge: true });
-  
+
       Swal.fire({
         icon: "success",
         title: "Added to Cart",
         text: "Item has been added to your cart.",
       });
-  
+
       // Reset count after adding to cart
       setCount(0);
+      setSelectedSize("");
     } catch (error) {
       console.error("Error updating Firestore:", error);
       Swal.fire({
@@ -222,11 +238,10 @@ const handleWishlist = async (e) => {
                   quality={75}
                   height={500}
                   alt={`Thumbnail ${index + 1}`}
-                  className={`cursor-pointer w-[130px] h-[158px] max-md:w-[70px] max-md:h-[73px] ${
-                    selectedImage === image
-                      ? "border-2 border-gray-500"
-                      : "opacity-50 border-2 border-gray-200"
-                  }`}
+                  className={`cursor-pointer w-[130px] h-[158px] max-md:w-[70px] max-md:h-[73px] ${selectedImage === image
+                    ? "border-2 border-gray-500"
+                    : "opacity-50 border-2 border-gray-200"
+                    }`}
                   onClick={() => setSelectedImage(image)}
                 />
               ))}
@@ -259,7 +274,9 @@ const handleWishlist = async (e) => {
               {product.sizes.map((size) => (
                 <span
                   key={size}
-                  className="px-3 flex justify-center items-center py-1 border border-gray-500 rounded text-sm w-20 max-md:w-12 h-10 hover:bg-gray-200 focus:outline-none transition cursor-pointer"
+                  className={`px-3 flex justify-center items-center py-1 border border-gray-500 rounded text-sm w-20 max-md:w-12 h-10 hover:bg-950 hover:text-white focus:outline-none transition cursor-pointer ${selectedSize === size ? "bg-950 text-white" : ""
+                    }`}
+                  onClick={() => handleSizeSelect(size)}
                 >
                   {size}
                 </span>
@@ -293,7 +310,7 @@ const handleWishlist = async (e) => {
             ) : (
               <FaRegHeart className="text-xl cursor-pointer text-gray-600 hover:text-gray-800" />
             )}
-            {isWishlisted ? (<p>Remove from Wishlist</p>) : (<p>Add to Wishlist</p>)}
+            {isWishlisted ? (<p>Wishlishted</p>) : (<p>Wishlisht</p>)}
 
 
           </button>

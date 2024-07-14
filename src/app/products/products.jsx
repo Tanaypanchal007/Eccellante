@@ -9,13 +9,20 @@ import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebaseConfig";
 import { useRouter } from "next/navigation";
-import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
-
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
 
 const ProductCard = ({ product, removeFromWishlist }) => {
   const router = useRouter();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [user, loading] = useAuthState(auth);
+  const [isInCart, setIsInCart] = useState(false);
 
   useEffect(() => {
     const fetchWishlist = async () => {
@@ -25,7 +32,9 @@ const ProductCard = ({ product, removeFromWishlist }) => {
           const userSnap = await getDoc(userRef);
           if (userSnap.exists()) {
             const wishlist = userSnap.data().items || [];
-            const isProductWishlisted = wishlist.some((item) => item.id === product.id);
+            const isProductWishlisted = wishlist.some(
+              (item) => item.id === product.id
+            );
             setIsWishlisted(isProductWishlisted);
           }
         } catch (error) {
@@ -53,21 +62,21 @@ const ProductCard = ({ product, removeFromWishlist }) => {
       });
       return;
     }
-  
+
     if (!product || !product.id) {
       return;
     }
-  
+
     try {
       const userRef = doc(db, "wishlists", user.uid);
       const userSnap = await getDoc(userRef);
-  
+
       // Check if the document exists
       if (!userSnap.exists()) {
         // If it doesn't exist, create it with an empty 'items' array
         await setDoc(userRef, { items: [] });
       }
-  
+
       // Now update the wishlist based on current state
       if (isWishlisted) {
         await updateDoc(userRef, {
@@ -94,7 +103,29 @@ const ProductCard = ({ product, removeFromWishlist }) => {
       console.error("Error updating Firestore:", error);
     }
   };
-  
+
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      if (product && product.id && user) {
+        try {
+          const userRef = doc(db, "carts", user.uid);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            const cart = userSnap.data().items || [];
+            const isProductInCart = cart.some((item) => item.id === product.id);
+            setIsInCart(isProductInCart);
+          }
+        } catch (error) {
+          console.error("Error fetching cart from Firestore:", error);
+        }
+      }
+    };
+    fetchCart();
+  }, [product, user]);
+
+  // ... (keep existing handleWishlist function)
+
   const handleAddToCart = async (e) => {
     e.stopPropagation();
     if (!user) {
@@ -112,61 +143,61 @@ const ProductCard = ({ product, removeFromWishlist }) => {
       });
       return;
     }
-  
+
     if (!product || !product.id) {
       return;
     }
-  
+
     try {
-      const cartRef = doc(db, "carts", user.uid);
-      const cartSnap = await getDoc(cartRef);
-  
-      let cartItems = [];
-      if (cartSnap.exists()) {
-        cartItems = cartSnap.data().items || [];
+      const userRef = doc(db, "carts", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, { items: [] });
       }
-  
-      const existingItemIndex = cartItems.findIndex(item => item.id === product.id);
-  
-      if (existingItemIndex !== -1) {
-        cartItems[existingItemIndex].quantity += 1;
+
+      if (isInCart) {
+        await updateDoc(userRef, {
+          items: arrayRemove({ ...product, quantity: 1 }),
+        });
+        setIsInCart(false);
+        Swal.fire({
+          icon: "success",
+          title: "Removed from Cart",
+          text: "Item has been removed from your cart.",
+        });
       } else {
-        cartItems.push({ ...product, quantity: 1 });
+        await updateDoc(userRef, {
+          items: arrayUnion({ ...product, quantity: 1 }),
+        });
+        setIsInCart(true);
+        Swal.fire({
+          icon: "success",
+          title: "Added to Cart",
+          text: "Item has been added to your cart.",
+        });
       }
-  
-      await setDoc(cartRef, { items: cartItems }, { merge: true });
-  
-      Swal.fire({
-        icon: "success",
-        title: "Added to Cart",
-        text: "Item has been added to your cart.",
-      });
     } catch (error) {
       console.error("Error updating Firestore:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "There was an error adding the item to your cart. Please try again.",
-      });
     }
   };
   return (
     <div
-      className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 flex flex-col gap-4 cursor-pointer hover:shadow-lg transition-shadow duration-200 "
+      className="bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col gap-4 cursor-pointer hover:shadow-lg transition-shadow duration-200 "
       onClick={() => {
         if (product && product.id) {
           router.push(`/product/${product.id}`);
         }
       }}
     >
-      <div className="relative h-[480px] sm:h-[420px] md:h-[420px] lg:h-[480px] xl:h-[330px] 2xl:h-[440px] overflow-hidden rounded-t-lg">
+      <div className="relative h-[480px] sm:h-[420px] md:h-[420px] lg:h-[480px] xl:h-[330px] 2xl:h-[440px] overflow-hidden rounded-t-lg p-2">
         {product && product.image && (
           <Image
             src={product.image}
             width={300}
             height={192}
             alt={product.name}
-            className="object-cover w-full h-full hover:scale-105 transition-transform duration-200"
+            className="object-cover w-full h- hover:scale-105 transition-transform duration-200"
           />
         )}
         {product && product.discount && (
@@ -175,7 +206,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
           </div>
         )}
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-[6px] px-3 py-2">
         <div className="flex justify-between items-start">
           <h2 className="text-lg font-bold pr-4">{product && product.name}</h2>
           <div onClick={handleWishlist}>
@@ -186,11 +217,11 @@ const ProductCard = ({ product, removeFromWishlist }) => {
             )}
           </div>
         </div>
-        <p className="text-sm text-gray-600 line-clamp-2 h-10">
+        <p>{product.label}</p>
+        <p className="text-sm text-gray-600 line-clamp-2 h-10 ">
           {product && product.description}
         </p>
-
-        <div className="flex gap-2 h-9">
+        {/* <div className="flex gap-2 h-9">
           {product && product.sizes && product.sizes.length > 0 ? (
             product.sizes.length > 5 ? (
               <div>
@@ -223,8 +254,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
           ) : (
             <p className="text-xs text-gray-500">No sizes available</p>
           )}
-        </div>
-
+        </div> */}
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-baseline">
             <p className="text-black text-xl font-semibold">
@@ -239,7 +269,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
             onClick={handleAddToCart}
           >
             <FiShoppingBag className="mr-2" />
-            <span>Add</span>
+            <span>{isInCart ? "Remove" : "Add"}</span>
           </div>
         </div>
       </div>
