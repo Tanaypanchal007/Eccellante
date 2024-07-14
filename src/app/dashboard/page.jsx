@@ -357,9 +357,7 @@ function Dashboard() {
           </button>
         </form>
         {/* Product list */}
-        <h1 className="text-black absolute text-2xl font-bold bottom-[565px] right-[360px]">
-          Order List
-        </h1>
+
         <div
           className="overflow-y-auto h-screen w-[50%] mt-[83px]"
           style={{

@@ -19,7 +19,7 @@ export default function Product() {
   const [open, setOpen] = useState(false); // Fixed the state variable name here
 
   const handleFilterMenu = () => {
-    setOpen(!open); 
+    setOpen(!open);
   };
 
   useEffect(() => {
@@ -85,8 +85,8 @@ export default function Product() {
       </div>
       {/* Banner End Here */}
       {/* Products title and Grid View Option start here */}
-      <div className="flex justify-between items-center px-20 max-lg:pl-3 max-lg:pr-9 max-sm:pr-8 max-md:px-5 py-5 sticky top-[10px]  max-lg:top-[70px] z-40 bg-50 max-xl:w-full border-b-[1px] border-600 mb-10">
-        <div className="text-2xl font-semibold ">Products</div>
+      <div className="flex justify-between items-center px-20 max-lg:pl-3 max-lg:pr-9 max-sm:pr-8 max-md:px-5 py-5 max-sm:py-3 sticky top-[10px]  max-lg:top-[70px] z-40 bg-50 max-xl:w-full border-b-[1px] border-600 mb-10">
+        <div className="text-2xl font-semibold max-sm:text-lg">Products</div>
         <div>
           <FaBars
             className="text-2xl xl:hidden cursor-pointer"
@@ -172,7 +172,7 @@ export default function Product() {
             <IoSearchOutline className="text-3xl absolute top-5 max-xl:left-10 left-[80px]" />
           </div>
           <div className="container mx-auto px-4 py-10 font-main">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-2 max-sm:gap-3 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
               {filteredProducts.length > 0 ? (
                 filteredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />

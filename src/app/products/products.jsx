@@ -2,15 +2,20 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-// import { useRouter } from "next/";
 import Swal from "sweetalert2";
 import { FiShoppingBag } from "react-icons/fi";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebaseConfig";
 import { useRouter } from "next/navigation";
-import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
-
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
 
 const ProductCard = ({ product, removeFromWishlist }) => {
   const router = useRouter();
@@ -25,7 +30,9 @@ const ProductCard = ({ product, removeFromWishlist }) => {
           const userSnap = await getDoc(userRef);
           if (userSnap.exists()) {
             const wishlist = userSnap.data().items || [];
-            const isProductWishlisted = wishlist.some((item) => item.id === product.id);
+            const isProductWishlisted = wishlist.some(
+              (item) => item.id === product.id
+            );
             setIsWishlisted(isProductWishlisted);
           }
         } catch (error) {
@@ -53,21 +60,21 @@ const ProductCard = ({ product, removeFromWishlist }) => {
       });
       return;
     }
-  
+
     if (!product || !product.id) {
       return;
     }
-  
+
     try {
       const userRef = doc(db, "wishlists", user.uid);
       const userSnap = await getDoc(userRef);
-  
+
       // Check if the document exists
       if (!userSnap.exists()) {
         // If it doesn't exist, create it with an empty 'items' array
         await setDoc(userRef, { items: [] });
       }
-  
+
       // Now update the wishlist based on current state
       if (isWishlisted) {
         await updateDoc(userRef, {
@@ -94,7 +101,7 @@ const ProductCard = ({ product, removeFromWishlist }) => {
       console.error("Error updating Firestore:", error);
     }
   };
-  
+
   const handleAddToCart = async (e) => {
     e.stopPropagation();
     if (!user) {
@@ -112,30 +119,32 @@ const ProductCard = ({ product, removeFromWishlist }) => {
       });
       return;
     }
-  
+
     if (!product || !product.id) {
       return;
     }
-  
+
     try {
       const cartRef = doc(db, "carts", user.uid);
       const cartSnap = await getDoc(cartRef);
-  
+
       let cartItems = [];
       if (cartSnap.exists()) {
         cartItems = cartSnap.data().items || [];
       }
-  
-      const existingItemIndex = cartItems.findIndex(item => item.id === product.id);
-  
+
+      const existingItemIndex = cartItems.findIndex(
+        (item) => item.id === product.id
+      );
+
       if (existingItemIndex !== -1) {
         cartItems[existingItemIndex].quantity += 1;
       } else {
         cartItems.push({ ...product, quantity: 1 });
       }
-  
+
       await setDoc(cartRef, { items: cartItems }, { merge: true });
-  
+
       Swal.fire({
         icon: "success",
         title: "Added to Cart",
@@ -150,47 +159,54 @@ const ProductCard = ({ product, removeFromWishlist }) => {
       });
     }
   };
+
   return (
     <div
-      className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 flex flex-col gap-4 cursor-pointer hover:shadow-lg transition-shadow duration-200 "
+      className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 max-sm:p-0 flex flex-col gap-4 max-sm:gap-1 cursor-pointer hover:shadow-lg transition-shadow duration-200"
       onClick={() => {
         if (product && product.id) {
           router.push(`/product/${product.id}`);
         }
       }}
     >
-      <div className="relative h-[480px] sm:h-[420px] md:h-[420px] lg:h-[480px] xl:h-[330px] 2xl:h-[440px] overflow-hidden rounded-t-lg">
-        {product && product.image && (
-          <Image
-            src={product.image}
-            width={300}
-            height={192}
-            alt={product.name}
-            className="object-cover w-full h-full hover:scale-105 transition-transform duration-200"
-          />
-        )}
-        {product && product.discount && (
-          <div className="absolute top-2 right-2 text-xs bg-gray-900 text-white px-2 py-1 rounded-full">
-            {product.discount}
-          </div>
-        )}
-      </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex justify-between items-start">
-          <h2 className="text-lg font-bold pr-4">{product && product.name}</h2>
-          <div onClick={handleWishlist}>
-            {isWishlisted ? (
-              <FaHeart className="text-xl cursor-pointer text-red-600" />
-            ) : (
-              <FaRegHeart className="text-xl cursor-pointer text-gray-600 hover:text-gray-800" />
-            )}
-          </div>
+      <div className="relative">
+        <div className="relative h-[260px] sm:h-[420px] md:h-[420px] lg:h-[480px] xl:h-[330px] 2xl:h-[440px] overflow-hidden rounded-t-lg">
+          {product && product.image && (
+            <Image
+              src={product.image}
+              width={300}
+              height={192}
+              alt={product.name}
+              className="object-cover w-full h-full hover:scale-105 transition-transform duration-200"
+            />
+          )}
+          {product && product.discount && (
+            <div className="absolute top-2 right-2 text-xs bg-gray-900 text-white px-2 py-1 rounded-full">
+              {product.discount}
+            </div>
+          )}
         </div>
-        <p className="text-sm text-gray-600 line-clamp-2 h-10">
-          {product && product.description}
-        </p>
-
-        <div className="flex gap-2 h-9">
+        <div className="max-sm:px-2 flex flex-col gap-2 max-sm:gap-1 my-2">
+          <div className="flex justify-between items-start">
+            <h2 className="text-lg font-bold pr-4 max-sm:text-[12px]">
+              {product && product.name}
+            </h2>
+            <div
+              onClick={handleWishlist}
+              className="max-sm:absolute max-sm:top-2 max-sm:right-2"
+            >
+              {isWishlisted ? (
+                <FaHeart className="text-xl cursor-pointer text-red-600" />
+              ) : (
+                <FaRegHeart className="text-xl cursor-pointer text-gray-700 hover:text-gray-800" />
+              )}
+            </div>
+          </div>
+          <p className="text-sm max-sm:text-[10px] text-gray-600 line-clamp-2 h-10">
+            {product && product.description}
+          </p>
+        </div>
+        {/* <div className="flex gap-2 h-9">
           {product && product.sizes && product.sizes.length > 0 ? (
             product.sizes.length > 5 ? (
               <div>
@@ -223,24 +239,24 @@ const ProductCard = ({ product, removeFromWishlist }) => {
           ) : (
             <p className="text-xs text-gray-500">No sizes available</p>
           )}
-        </div>
+        </div> */}
 
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-left max-sm:flex-col max-sm:gap-1 max-sm:mb-2 max-sm:px-2">
           <div className="flex gap-2 items-baseline">
-            <p className="text-black text-xl font-semibold">
+            <p className="text-black text-xl font-semibold max-sm:text-sm">
               ₹{product && product.price}
             </p>
             {product && product.oldPrice && (
               <del className="text-gray-400 text-sm">₹{product.oldPrice}</del>
             )}
           </div>
-          <div
-            className="flex items-center text-white bg-gray-900 px-4 py-2 rounded-md hover:bg-gray-700 transition-colors cursor-pointer"
+          {/* <div
+            className="flex items-center text-white bg-gray-900 px-4 max-sm:px-2 max-sm:py-[6px] py-2 rounded-md hover:bg-gray-700 transition-colors cursor-pointer max-sm:w-[90px] max-sm:mb-2"
             onClick={handleAddToCart}
           >
             <FiShoppingBag className="mr-2" />
-            <span>Add</span>
-          </div>
+            <span className="max-sm:text-sm">Add</span>
+          </div> */}
         </div>
       </div>
     </div>
