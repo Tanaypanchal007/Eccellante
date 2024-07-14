@@ -187,7 +187,7 @@ const ChekoutForm = () => {
           setTotalItems(0);
           setTotalPrice(0);
           setTotalDiscount(0);
-
+          setCartItems(updatedCartItems);
           Swal.fire({
             icon: "success",
             title: "Payment Successful!",
