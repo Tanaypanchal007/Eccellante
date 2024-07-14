@@ -63,12 +63,13 @@ export default function Orders() {
                 </td>
                 <td className="px-4 py-4">
                   <div className="flex flex-wrap gap-2">
-                    {order.images && order.images.map((image, index) => (
+                    {order.items.map((item, index) => (
                       <div key={index} className="relative w-20 h-20">
                         <Image
-                          src={image}
-                          alt={`Order ${order.orderId} image ${index + 1}`}
-                          layout="fill"
+                          src={item.image}
+                          alt={`${item.name} image`}
+                          width={80}
+                          height={80}
                           objectFit="cover"
                           className="rounded-md"
                         />

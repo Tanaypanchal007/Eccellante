@@ -150,7 +150,7 @@ const ChekoutForm = () => {
         try {
           // Prepare order items
           // const orderItems = cartItems.map(item => ({
-          //   productId: item.id,
+          //   productId: item.id,/
           //   name: item.name,
           //   price: item.price,
           //   quantity: item.quantity,
