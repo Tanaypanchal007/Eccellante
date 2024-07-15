@@ -56,15 +56,15 @@ const ChekoutForm = () => {
   useEffect(() => {
     const loadRazorpay = () => {
       return new Promise((resolve) => {
-        const script = document.createElement('script');
-        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
         script.async = true;
         script.onload = () => {
-          console.log('Razorpay SDK loaded successfully');
+          console.log("Razorpay SDK loaded successfully");
           resolve(true);
         };
         script.onerror = () => {
-          console.error('Failed to load Razorpay SDK');
+          console.error("Failed to load Razorpay SDK");
           resolve(false);
         };
         document.body.appendChild(script);
@@ -72,14 +72,15 @@ const ChekoutForm = () => {
     };
     loadRazorpay().then((success) => {
       if (!success) {
-        console.error('Razorpay SDK failed to load. Payment functionality may not work.');
+        console.error(
+          "Razorpay SDK failed to load. Payment functionality may not work."
+        );
       }
     });
   }, []);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setUserInfo(prev => ({ ...prev, [name]: value }));
+    setUserInfo((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleProocedToPay = async (e) => {
@@ -101,8 +102,8 @@ const ChekoutForm = () => {
       return;
     }
 
-    if (typeof window.Razorpay === 'undefined') {
-      console.error('Razorpay SDK is not loaded');
+    if (typeof window.Razorpay === "undefined") {
+      console.error("Razorpay SDK is not loaded");
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -217,7 +218,7 @@ const ChekoutForm = () => {
       const rzp1 = new window.Razorpay(options);
       rzp1.open();
     } catch (error) {
-      console.error('Error initializing Razorpay:', error);
+      console.error("Error initializing Razorpay:", error);
       Swal.fire({
         icon: "error",
         title: "Payment Gateway Error",

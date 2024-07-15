@@ -2,7 +2,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-// import { useRouter } from "next/";
 import Swal from "sweetalert2";
 import { FiShoppingBag } from "react-icons/fi";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
@@ -181,46 +180,53 @@ const ProductCard = ({ product, removeFromWishlist }) => {
       console.error("Error updating Firestore:", error);
     }
   };
+
   return (
     <div
-      className="bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col gap-4 cursor-pointer hover:shadow-lg transition-shadow duration-200 "
+      className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 max-sm:p-0 flex flex-col gap-4 max-sm:gap-1 cursor-pointer hover:shadow-lg transition-shadow duration-200"
       onClick={() => {
         if (product && product.id) {
           router.push(`/product/${product.id}`);
         }
       }}
     >
-      <div className="relative h-[480px] sm:h-[420px] md:h-[420px] lg:h-[480px] xl:h-[330px] 2xl:h-[440px] overflow-hidden rounded-t-lg p-2">
-        {product && product.image && (
-          <Image
-            src={product.image}
-            width={300}
-            height={192}
-            alt={product.name}
-            className="object-cover w-full h- hover:scale-105 transition-transform duration-200"
-          />
-        )}
-        {product && product.discount && (
-          <div className="absolute top-2 right-2 text-xs bg-gray-900 text-white px-2 py-1 rounded-full">
-            {product.discount}
-          </div>
-        )}
-      </div>
-      <div className="flex flex-col gap-[6px] px-3 py-2">
-        <div className="flex justify-between items-start">
-          <h2 className="text-lg font-bold pr-4">{product && product.name}</h2>
-          <div onClick={handleWishlist}>
-            {isWishlisted ? (
-              <FaHeart className="text-xl cursor-pointer text-red-600" />
-            ) : (
-              <FaRegHeart className="text-xl cursor-pointer text-gray-600 hover:text-gray-800" />
-            )}
-          </div>
+      <div className="relative">
+        <div className="relative h-[260px] sm:h-[420px] md:h-[420px] lg:h-[480px] xl:h-[330px] 2xl:h-[440px] overflow-hidden rounded-t-lg">
+          {product && product.image && (
+            <Image
+              src={product.image}
+              width={300}
+              height={192}
+              alt={product.name}
+              className="object-cover w-full h-full hover:scale-105 transition-transform duration-200"
+            />
+          )}
+          {product && product.discount && (
+            <div className="absolute top-2 right-2 text-xs bg-gray-900 text-white px-2 py-1 rounded-full">
+              {product.discount}
+            </div>
+          )}
         </div>
-        <p>{product.label}</p>
-        <p className="text-sm text-gray-600 line-clamp-2 h-10 ">
-          {product && product.description}
-        </p>
+        <div className="max-sm:px-2 flex flex-col gap-2 max-sm:gap-1 my-2">
+          <div className="flex justify-between items-start">
+            <h2 className="text-lg font-bold pr-4 max-sm:text-[12px]">
+              {product && product.name}
+            </h2>
+            <div
+              onClick={handleWishlist}
+              className="max-sm:absolute max-sm:top-2 max-sm:right-2"
+            >
+              {isWishlisted ? (
+                <FaHeart className="text-xl cursor-pointer text-red-600" />
+              ) : (
+                <FaRegHeart className="text-xl cursor-pointer text-gray-700 hover:text-gray-800" />
+              )}
+            </div>
+          </div>
+          <p className="text-sm max-sm:text-[10px] text-gray-600 line-clamp-2 h-10">
+            {product && product.description}
+          </p>
+        </div>
         {/* <div className="flex gap-2 h-9">
           {product && product.sizes && product.sizes.length > 0 ? (
             product.sizes.length > 5 ? (
@@ -255,22 +261,23 @@ const ProductCard = ({ product, removeFromWishlist }) => {
             <p className="text-xs text-gray-500">No sizes available</p>
           )}
         </div> */}
-        <div className="flex justify-between items-center">
+
+        <div className="flex justify-between items-left max-sm:flex-col max-sm:gap-1 max-sm:mb-2 max-sm:px-2">
           <div className="flex gap-2 items-baseline">
-            <p className="text-black text-xl font-semibold">
+            <p className="text-black text-xl font-semibold max-sm:text-sm">
               ₹{product && product.price}
             </p>
             {product && product.oldPrice && (
               <del className="text-gray-400 text-sm">₹{product.oldPrice}</del>
             )}
           </div>
-          <div
-            className="flex items-center text-white bg-gray-900 px-4 py-2 rounded-md hover:bg-gray-700 transition-colors cursor-pointer"
+          {/* <div
+            className="flex items-center text-white bg-gray-900 px-4 max-sm:px-2 max-sm:py-[6px] py-2 rounded-md hover:bg-gray-700 transition-colors cursor-pointer max-sm:w-[90px] max-sm:mb-2"
             onClick={handleAddToCart}
           >
             <FiShoppingBag className="mr-2" />
             <span>{isInCart ? "Remove" : "Add"}</span>
-          </div>
+          </div>*/}
         </div>
       </div>
     </div>
